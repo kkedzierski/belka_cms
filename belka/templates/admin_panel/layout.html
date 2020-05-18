@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    {% if title %}
+    <title>Belka - {{  title  }}</title>
+    {% else %}
+    <title>Belka</title>
+    {% endif %}
+ <!-- Bootstrap CSS CDN -->
+ <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.0/css/bootstrap.min.css" integrity="sha384-9gVQ4dYFwwWSjIDZnLEWnxCjeSWFphJiwGPXr1jddIhOegiu1FwO5qRGvFXOdJZ4" crossorigin="anonymous">
+ <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='admin_panel.css')}}">
+
+ <script src="https://use.fontawesome.com/7f3c0aa4e3.js"></script>
+</head>
+
+<body>
+    <div class="wrapper">
+        <!-- Sidebar  -->
+        <nav id="sidebar">
+            <div class="sidebar-header">
+                <img src="/static/images/belka_logo_admin.png" width="200px" alt="">
+            </div>
+            <ul class="list-unstyled CTAs">
+                <li>
+                    <a href="#" class="download">Create Webiste</a>
+                </li>
+            </ul>
+            <ul class="list-unstyled components">
+                <li>
+                    <a href="#">Main panel</a>
+                </li>
+                <li>
+                    <a href="#">Users</a>
+                </li>
+                <li class="active">
+                    <a href="#homeSubmenu" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle">Apparence</a>
+                    <ul class="collapse list-unstyled" id="homeSubmenu">
+                        <li>
+                            <a href="#">Navigation</a>
+                        </li>
+                        <li>
+                            <a href="#">Content</a>
+                        </li>
+                        <li>
+                            <a href="#">Footer</a>
+                        </li>
+                    </ul>
+                </li>
+                <li>
+                    <a href="#">Pages</a>
+                </li>
+            </ul>
+        </nav>
+
+        <!-- Page Content  -->
+        <div id="content">
+
+            <nav class="navbar navbar-expand-lg navbar-light bg-light">
+                <div class="container-fluid">
+
+                    <button type="button" id="sidebarCollapse" class="btn btn-info">
+                        <i class="fas fa-align-left"></i>
+                        <span>Main navigation</span>
+                    </button>
+                    <button class="btn btn-dark d-inline-block d-lg-none ml-auto" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+                        <i class="fas fa-align-justify"></i>
+                    </button>
+
+                    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                        <ul class="nav navbar-nav ml-auto">
+                            <li class="nav-item">
+                                <a class="fa fa-user nav-link" href="#"> Admin account</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="fa fa-power-off nav-link"href="{{ url_for('main.logout') }}"> Log out</a>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </nav>
+
+            <div class="container">
+                <div class="row">
+                    <div class="col-md-12">
+                        {% with messages = get_flashed_messages(with_categories=true) %}
+                        {% if messages %}
+                            {% for category, message in messages %}
+                                <div class="alert alert-{{ category }}" role="alert">
+                                    {{ message }}
+                                </div>
+                            {% endfor %}
+                        {% endif%}
+                        {% endwith %}
+                    </div>
+                </div>
+            <h2>Getting started with Belka CMS</h2>
+            <p>Belka CMS are using bootstrap 4 framework to create webiste</p>
+            <p>To start creating your webiste you need to click create website button on left menu</p>
+
+            <div class="line"></div>
+
+            <h2>Quick video how to create simple webiste using Belka CMS</h2>
+            <iframe id="ytplayer" type="text/html" width="640" height="360"
+            src="http://www.youtube.com/embed/maMbiJGkbZ4?autoplay=1&origin=http://example.com"
+            frameborder="0">
+            </iframe>
+          
+            <div class="line"></div>
+
+            <h2>If you will have some troubles</h2>
+            <p>You can contact us on belka.cms@gmail.com</p>
+
+            <div class="line"></div>
+
+            <h3>Have a great fun with Belka CMS</h3>
+            <p>Adding, modifying and deleting texts is done by clicking the button.
+                When writing text, you can use the buttons to format the text
+                (e.g., bold, link insertion) similar to those in Word.</p>
+        </div>
+        </div>
+    </div>
+
+    <!-- jQuery CDN - Slim version (=without AJAX) -->
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+    <!-- Popper.JS -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.0/umd/popper.min.js" integrity="sha384-cs/chFZiN24E4KMATLdqdvsezGxaGsi4hLGOzlXwp5UZB1LY//20VyM2taTB4QvJ" crossorigin="anonymous"></script>
+    <!-- Bootstrap JS -->
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.0/js/bootstrap.min.js" integrity="sha384-uefMccjFJAIv6A+rW+L4AHf99KvxDjWSu1z9VI8SKNVmz4sk7buKt/6v9KI65qnm" crossorigin="anonymous"></script>
+
+    <script type="text/javascript">
+        $(document).ready(function () {
+            $('#sidebarCollapse').on('click', function () {
+                $('#sidebar').toggleClass('active');
+            });
+        });
+    </script>
+</body>
+
+</html>

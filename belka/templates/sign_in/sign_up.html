@@ -1,0 +1,114 @@
+<!DOCTYPE HTML>
+<html lang="en">
+<head>
+	<meta charset="utf-8" />
+	<title>Sign in to Belka</title>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+    <link rel="stylesheet" href="{{url_for('static', filename='signing.css')}}" type="text/css" />
+	<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+	
+</head>
+
+<body>
+    <div class="container">
+        <div class="row">
+            <div class="col">
+                {% with messages = get_flashed_messages(with_categories=true) %}
+                {% if messages %}
+                    {% for category, message in messages %}
+                        <div class="alert alert-{{ category }} mt-4" role="alert">
+                            {{ message }}
+                        </div>
+                    {% endfor %}
+                {% endif %}
+                {% endwith %}
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-lg-7">
+                <div class="register-text-container mt-4">
+                    <h2>Register for free</h2>
+                    <h4>Create your own website</h4>
+                </div>
+                <div class="register-text-container mt-4">
+                    <h4>Belka cms allows manual editing of content without IT knowledge.</h4>
+                        <h6>Adding, modifying and deleting texts is done by clicking the button.
+                            When writing text, you can use the buttons to format the text
+                            (e.g., bold, link insertion) similar to those in Word.</h6>
+                </div>
+                <div class="register-text-container mt-4">
+                    <h6>Belka cms allows you to manage your site.
+                        You don't need advanced programming knowledge or HTML knowledge.
+                        You also don't need to install specialized software. Register to create a fully functional website
+                    </h6>
+                </div>
+            </div>
+            <div class="col-lg-5 mt-4 text-center">
+                <form class="register-container" action="{{url_for('main.sign_in')}}">
+                        <input type="submit" value="I have account">
+                </form>
+                <div class="register-container mt-4 mb-6">
+                <img src="/static/images/belka_logo.png" alt="Belka cms">
+                    <form method="POST" action="">
+                        {{ form.hidden_tag() }}
+                        <!-- Login -->
+                        {% if form.username.errors %}
+                            {{ form.username(class="is-invalid") }}
+                            <div class="invalid-feedback">
+                                {% for error in form.username.errors %}
+                                    <span>{{ error }}</span>
+                                {% endfor %}
+                            </div>
+                        {% else %}
+                            {{ form.username() }}
+                        {% endif %}
+                        <!-- Email -->
+                        {% if form.email.errors %}
+                            {{ form.email(class="is-invalid") }}
+                            <div class="invalid-feedback">
+                                {% for error in form.email.errors %}
+                                    <span>{{ error }}</span>
+
+                                {% endfor %}
+                            </div>
+                        {% else %}
+                            {{ form.email(class="") }}
+                        {% endif %}
+                        <!-- Password -->
+                        {% if form.password.errors %}
+                        {{ form.password(class="is-invalid") }}
+                            <div class="invalid-feedback">
+                                {% for error in form.password.errors %}
+                                    <span>{{ error }}</span>
+
+                                {% endfor %}
+                            </div>
+                        {% else %}
+                            {{ form.password() }}
+                        {% endif %}
+                        <!-- Confirm password -->
+                        {% if form.confirm_password.errors %}
+                        {{ form.confirm_password(class="is-invalid") }}
+                            <div class="invalid-feedback">
+                                {% for error in form.confirm_password.errors %}
+                                    <span>{{ error }}</span>
+
+                                {% endfor %}
+                            </div>
+                        {% else %}
+                            {{ form.confirm_password() }}
+                        {% endif %}
+                        {{ form.submit(class="btn btn-outline-info") }}          
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <script src="https://code.jquery.com/jquery-3.4.1.slim.min.js" integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js" integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6" crossorigin="anonymous"></script>
+	
+</body>
+</html>
