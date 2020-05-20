@@ -4,24 +4,37 @@
 <form class="mb-4" action="{{ url_for('website.index') }}">
     <label>Add your website name:</label>
     <input type="text" placeholder="Name of your website">
-    <input type="submit" value="Save">
+    <br>
+    <input type="radio" id="blank" name="theme" value="blank">
+    <label for="blank">Blank page</label>
+    <br>
+    <input type="radio" id="theme" name="theme">
+    <label for="blank">Existing theme</label>
+    <br>
+    <input type="submit" value="Create website">
 </form>
 
 <legend>Or choose one of existing website theme:</legend>
 
 <h6 class="mb-4">To preview click the picture</h6>
-<div class="col-lg-4 mb-4">
+<div class="row">
+    <div class="col-lg-4 mb-4">
+    <a href="{{ url_for('main_panel.hotel_website') }}">
+        <img src="/static/images/hotel_image.png"  width="350px" height="300px" alt="">
+    </a>
     Hotel
-<a href="{{ url_for('main_panel.hotel_website') }}">
-    <img src="/static/images/hotel_icon.png" width="350px" height="300px" alt="Hotel-img">
-</a>
-</div>
-<div class="col-lg-4 mb-4">
-<img src="/static/images/trip_icon.png" width="350px" height="300px" alt="">
-Travel
-</div>
-<div class="col-lg-4 mb-4">
-<img src="/static/images/paint_icon.png" width="350px" height="300px" alt="">
-Painting
+    </div>
+    <div class="col-lg-4 mb-4">
+    <a href="{{ url_for('main_panel.travel_website') }}">
+    <img src="/static/images/travel_image.png" width="350px" height="300px" alt="">
+    </a>
+    Travel
+    </div>
+    <div class="col-lg-4 mb-4">
+    <a href="{{ url_for('main_panel.paiting_website') }}">
+    <img src="/static/images/painting_image.png" width="350px" height="300px" alt="">
+    </a>
+    Painting
+    </div>
 </div>
 {% endblock content %}

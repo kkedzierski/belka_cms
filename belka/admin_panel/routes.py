@@ -22,6 +22,16 @@ def hotel_website():
     return render_template('website_style/hotel.html', title="Hotel style")
 
 
+@main_panel.route('/travel')
+def travel_website():
+    return render_template('website_style/travel.html', title="Travel style")
+
+
+@main_panel.route('/paiting')
+def paiting_website():
+    return render_template('website_style/painting.html',
+                           title="Paintng style")
+
 @main_panel.route('/admin-panel')
 def admin_panel():
     return render_template('admin_panel/admin-panel.html', title="Admin Panel")
