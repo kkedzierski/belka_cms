@@ -20,7 +20,12 @@ def create_app(config_class=Config):
     bcrypt.init_app(app)
     login_manager.init_app(app)
 
-    from belka.admin_panel.routes import main
-    app.register_blueprint(main)
+    from belka.admin_panel.routes import main_panel
+    from belka.authentication_panel.routes import authentication
+    from belka.main_website.routes import website
+
+    app.register_blueprint(main_panel)
+    app.register_blueprint(authentication)
+    app.register_blueprint(website)
 
     return app
