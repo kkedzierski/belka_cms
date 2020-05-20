@@ -24,32 +24,32 @@
             </div>
             <ul class="list-unstyled CTAs">
                 <li>
-                    <a href="#" class="button">Yours Webiste</a>
+                    <a href="{{ url_for('main.create_website') }}" class="button">Create Webiste</a>
                 </li>
             </ul>
             <ul class="list-unstyled components">
                 <li>
-                    <a href="{{ url_for('main.getting_start') }}">Main Panel</a>
+                    <a href="{{ url_for('main.getting_start') }}">Getting start</a>
                 </li>
                 <li>
-                    <a href="#">Users</a>
+                    <a class="disabled" href="#">Users</a>
                 </li>
                 <li class="active">
                     <a href="#homeSubmenu" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle">Apparence</a>
                     <ul class="collapse list-unstyled" id="homeSubmenu">
                         <li>
-                            <a href="#">Navigation</a>
+                            <a class="disabled" href="#">Navigation</a>
                         </li>
                         <li>
-                            <a href="#">Content</a>
+                            <a class="disabled" href="#">Content</a>
                         </li>
                         <li>
-                            <a href="#">Footer</a>
+                            <a class="disabled" href="#">Footer</a>
                         </li>
                     </ul>
                 </li>
                 <li>
-                    <a href="#">Pages</a>
+                    <a class="disabled" href="#">Pages</a>
                 </li>
             </ul>
         </nav>

@@ -44,7 +44,7 @@ def sign_in():
             if next_page:
                 return redirect(next_page)
             else:
-                return redirect(url_for('main.index'))
+                return redirect(url_for('main.getting_start'))
         else:
             flash('Login Unsuccessful. Please check your email and passoword',
                   'danger')
@@ -59,6 +59,23 @@ def logout():
     return redirect(url_for('main.sign_up'))
 
 
+@main.route('/getting-start')
+def getting_start():
+    return render_template('admin_panel/getting-start.html',
+                           title='Getting started')
+
+
+@main.route('/create-website')
+def create_website():
+    return render_template('admin_panel/create-website.html',
+                           title="Create website")
+
+
+@main.route('/hotel')
+def hotel_website():
+    return render_template('website_style/hotel.html', title="Hotel style")
+
+
 @main.route('/index')
 def index():
-    return render_template('admin_panel/index.html', title='Admin panel')
+    return render_template('main_website/index.html', title="Your website")
