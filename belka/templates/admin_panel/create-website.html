@@ -1,7 +1,7 @@
 {% extends 'admin_panel/getting-start.html' %}
 {% block content %}
 <h1>Create your website</h1>
-<form class="mb-4" action="{{ url_for('main.index') }}">
+<form class="mb-4" action="{{ url_for('website.index') }}">
     <label>Add your website name:</label>
     <input type="text" placeholder="Name of your website">
     <input type="submit" value="Save">
@@ -12,7 +12,7 @@
 <h6 class="mb-4">To preview click the picture</h6>
 <div class="col-lg-4 mb-4">
     Hotel
-<a href="{{ url_for('main.hotel_website') }}">
+<a href="{{ url_for('main_panel.hotel_website') }}">
     <img src="/static/images/hotel_icon.png" width="350px" height="300px" alt="Hotel-img">
 </a>
 </div>

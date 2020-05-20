@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 	<meta charset="utf-8" />
-	<title>Sign in to Belka</title>
+	<title>Sign up to Belka</title>
     <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
     <link rel="stylesheet" href="{{url_for('static', filename='signing.css')}}" type="text/css" />
 	<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
@@ -44,7 +44,7 @@
                 </div>
             </div>
             <div class="col-lg-5 mt-4 text-center">
-                <form class="register-container" action="{{url_for('main.sign_in')}}">
+                <form class="register-container" action="{{url_for('authentication.login')}}">
                         <input type="submit" value="I have account">
                 </form>
                 <div class="register-container mt-4 mb-6">

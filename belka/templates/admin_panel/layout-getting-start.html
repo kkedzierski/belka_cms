@@ -24,12 +24,12 @@
             </div>
             <ul class="list-unstyled CTAs">
                 <li>
-                    <a href="{{ url_for('main.create_website') }}" class="button">Create Webiste</a>
+                    <a href="{{ url_for('main_panel.create_website') }}" class="button">Create Webiste</a>
                 </li>
             </ul>
             <ul class="list-unstyled components">
                 <li>
-                    <a href="{{ url_for('main.getting_start') }}">Getting start</a>
+                    <a href="{{ url_for('main_panel.getting_start') }}">Getting start</a>
                 </li>
                 <li>
                     <a class="disabled" href="#">Users</a>
@@ -74,7 +74,7 @@
                                 <a class="fa fa-user nav-link" href="#"> Admin account</a>
                             </li>
                             <li class="nav-item">
-                                <a class="fa fa-power-off nav-link"href="{{ url_for('main.logout') }}"> Log out</a>
+                                <a class="fa fa-power-off nav-link"href="{{ url_for('authentication.logout') }}"> Log out</a>
                             </li>
                         </ul>
                     </div>
