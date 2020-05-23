@@ -2,3 +2,9 @@ body {
     font-family: 'Poppins', sans-serif;
     background-image: url("/static/images/hotel.png");
 }
+
+.carousel-inner{
+    width: auto;
+    height: 400px;
+    object-fit: contain;
+}

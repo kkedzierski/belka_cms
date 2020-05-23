@@ -1,0 +1,30 @@
+{% extends 'admin_panel/layout.html' %}
+{% block content %}
+<h1>Navigation bar</h1>
+<p>Having easy-to-use navigation is important for any web site.</p>
+<p>Belka cms create for you some fully responsive navigation.</p>
+<p>Choose one and use for your website</p>
+<div class="row">
+<div class="col mt-4 belka_block ">
+    <img src="/static/images/navbar_blue.png" alt="">
+    <form action="{{ url_for('main_panel.change_navigation') }}" class="float-right" method="POST">
+        <input type="hidden" name="nav_style" value="blue">
+        <input value="Change" type="submit" class="btn btn-info">
+    </form>
+</div>
+<div class="col belka_block mt-4 ">
+    <img src="/static/images/navbar_dark.jpg" alt="">
+    <form action="{{ url_for('main_panel.change_navigation') }}" class="float-right" method="POST">
+        <input type="hidden" name="nav_style" value="dark">
+        <input class="btn btn-info btn-block" value="Change" type="submit">
+    </form>
+</div>
+<div class="col mt-4 belka_block ">
+        <img src="/static/images/navbar_green.png" alt="">
+        <form action="{{ url_for('main_panel.change_navigation') }}" class="float-right" method="POST">
+            <input type="hidden" name="nav_style" value="green">
+            <input class="btn btn-info btn-block" value="Change" type="submit">
+        </form>
+</div>
+</div>
+{% endblock content %}

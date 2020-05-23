@@ -1,0 +1,10 @@
+body {
+    font-family: 'Poppins', sans-serif;
+    background-image: url("/static/images/painting.png");
+}
+
+img{
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+}
