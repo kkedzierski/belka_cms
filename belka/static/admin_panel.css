@@ -9,7 +9,6 @@ p {
     font-size: 1.1em;
     font-weight: 300;
     line-height: 1.7em;
-    color: #999;
 }
 
 a,
@@ -162,4 +161,17 @@ a.article:hover {
     #sidebarCollapse span {
         display: none;
     }
+}
+
+.belka_block{
+    background-color: white;
+    padding: 58px;
+    -webkit-box-shadow: 3px 3px 30px 5px rgba(204,204,204,0.9);
+    -moz-box-shadow: 3px 3px 30px 5px rgba(204,204,204,0.9);
+    box-shadow: 3px 3px 30px 5px rgba(204,204,204,0.9);
+    font-family: Century Gothic;
+}
+
+.btn{
+    border-radius: 0
 }

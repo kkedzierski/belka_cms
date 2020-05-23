@@ -1,0 +1,14 @@
+{% extends 'admin_panel/layout.html' %}
+{% block content %}
+{% for website in website %}
+<div class="row">
+    <div class="col-lg-12 belka_block mt-4 mr-2">
+        <form method="POST" action="{{ url_for('main_panel.change_website_name') }}">
+            <legend>Change website name: </legend>
+            <input class="form-control" type="text" name="website_name" placeholder="Change website name" value="{{ website.title }}">
+            <input class="mt-2 btn btn-info btn-block" type="submit" value="Change name">
+        </form>
+    </div>
+</div>
+{% endfor %}
+{% endblock content %}

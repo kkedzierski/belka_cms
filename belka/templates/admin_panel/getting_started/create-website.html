@@ -1,0 +1,43 @@
+{% extends 'admin_panel/getting_started/layout-getting-started.html' %}
+{% block content %}
+
+<h1>Create your website</h1>
+<form method="POST" class="mb-4" action="{{ url_for('main_panel.create_website') }}">
+    <div class="form-group">
+        <label>Add your website name:</label>
+        <input class="form-control" name="website_name" type="text" placeholder="Name of your website">
+        <input type="submit" class="mt-2 btn btn-info btn-lg btn-block" value="Create blank website">
+    </div>
+</form>
+
+<legend>Or choose one of existing website theme:</legend>
+
+<h6 class="mb-4">To preview click the picture</h6>
+<div class="row">
+    <div class="col-lg-4 mb-4">
+        <a href="{{ url_for('main_panel.hotel_website') }}">
+            <img src="/static/images/hotel_image.png"  width="350px" height="300px" alt="">
+        </a>
+        <form action="" method="POST">
+            <input class="mt-2 btn btn-info btn-lg" value="Create website with Hotel style" type="submit">
+        </form>
+    </div>
+    <div class="col-lg-4 mb-4">
+        <a href="{{ url_for('main_panel.travel_website') }}">
+        <img src="/static/images/travel_image.png" width="350px" height="300px" alt="">
+        </a>
+        <form action="" method="POST">
+            <input class="mt-2 btn btn-info btn-lg" value="Create website with Travel style" type="submit">
+        </form>
+    </div>
+    <div class="col-lg-4 mb-4">
+        <a href="{{ url_for('main_panel.paiting_website') }}">
+        <img src="/static/images/painting_image.png" width="350px" height="300px" alt="">
+        </a>
+        <form action="" method="POST">
+            <input class="mt-2 btn btn-info btn-lg" value="Create website with Painting style" type="submit">
+        </form>
+    </div>
+</div>
+
+{% endblock content %}

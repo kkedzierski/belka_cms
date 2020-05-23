@@ -45,7 +45,7 @@ def login():
             if next_page:
                 return redirect(next_page)
             else:
-                return redirect(url_for('main_panel.getting_start'))
+                return redirect(url_for('main_panel.getting_started'))
         else:
             flash('Login Unsuccessful. Please check your email and passoword',
                   'danger')
