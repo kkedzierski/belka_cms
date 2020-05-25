@@ -1,0 +1,61 @@
+{% extends 'admin_panel/layout.html' %}
+{% block content %}
+<h1>Font Size</h1>
+<p>Choose font size for particural element on page</p>
+<div class="row">
+    <div class="col-lg-4 belka_block mt-4">
+        <h3>Navbar</h3>
+        <form action="" method="POST">
+                <div class="slidecontainer">
+                    <input type="range" min="10" max="40" value="16" class="slider" id="navbarSliderID">
+                </div>
+              <p>Value: <span id="navbarOutputID"></span></p>
+              <div id="NavbarID">Navbar</div>
+            <input class="mt-4 btn btn-info btn-block" type="submit" value="Change size">
+        </form>
+    </div>
+    <div class="col-lg-4 belka_block mt-4">
+        <h3>Title Post </h3>
+        <form action="" method="POST">
+            <div class="slidecontainer">
+                <input type="range" min="10" max="40" value="16" class="slider" id="titlePostSliderID">
+            </div>
+            <p>Value: <span id="titlePostOutputID"></span></p>
+            <div id="TitleID">Title Post</div>
+            <input class="mt-4 btn btn-info btn-block" type="submit" value="Change size">
+        </form>
+    </div>
+    <div class="col-lg-4 belka_block mt-4">
+        <h3>Post text</h3>
+        <form action="" method="POST">
+            <div class="slidecontainer">
+                <input type="range" min="10" max="40" value="16" class="slider" id="postTextSliderID">
+            </div>
+            <p>Value: <span id="postTextOutputID"></span></p>
+            <div id="PostID">Post text</div>
+            <input class="mt-4 btn btn-info btn-block" type="submit" value="Change size">
+        </form>
+    </div>
+<script>
+function show_slider_result(sliderID, outputID, textToChangeID){
+   var slider = document.getElementById(sliderID);
+    var output = document.getElementById(outputID);
+    output.innerHTML = slider.value; 
+
+    slider.oninput = function() {
+    output.innerHTML = this.value;
+    }
+
+    var text_to_show_changes = document.getElementById(textToChangeID)
+    slider.addEventListener('input', function() {
+        var size = slider.value;
+        text_to_show_changes.style.fontSize = size + "px";
+    });
+    
+}
+show_slider_result("navbarSliderID", "navbarOutputID", "NavbarID")
+show_slider_result("titlePostSliderID", "titlePostOutputID", "TitleID")
+show_slider_result("postTextSliderID", "postTextOutputID", "PostID")
+
+    </script>
+{% endblock content %}
