@@ -73,7 +73,7 @@ def admin_panel():
         return redirect(url_for('main_panel.getting_started'))
     return render_template('admin_panel/admin-panel.html', title="Admin Panel")
 
-
+#region Navigation
 @main_panel.route('/apperance/navigation', methods=['GET', 'POST'])
 def navigation_page():
     if not is_website_created():
@@ -81,6 +81,34 @@ def navigation_page():
         return redirect(url_for('main_panel.getting_started'))
     return render_template('admin_panel/apperance/navigation.html',
                            title="Navigation bar")
+
+
+@main_panel.route('/apperance/navigation/font-size', methods=['GET', 'POST'])
+def change_nav_font_size():
+    if not is_website_created():
+        flash('You dont have a website. Create a website first!', 'info')
+        return redirect(url_for('main_panel.getting_started'))
+    if request.method == 'POST':
+        navbarFont = request.form.get('navbarFont')
+        website = Website.query.get(1)
+        website.navbar_font_size = navbarFont
+        db.session.commit()
+        flash('Navigation font size changed', 'success')
+        return redirect(url_for('website.index'))
+
+
+@main_panel.route('/apperance/navigation/font-family', methods=['GET', 'POST'])
+def change_nav_font_family():
+    if not is_website_created():
+        flash('You dont have a website. Create a website first!', 'info')
+        return redirect(url_for('main_panel.getting_started'))
+    if request.method == 'POST':
+        navbarFontFamily = request.form.get('navbarFontFamily')
+        website = Website.query.get(1)
+        website.navbar_font_style = navbarFontFamily
+        db.session.commit()
+        flash('Navigation font family changed', 'success')
+        return redirect(url_for('website.index'))
 
 
 @main_panel.route('/apperance/navigation/styles', methods=['POST'])
@@ -101,7 +129,9 @@ def change_navigation():
         flash('Navigation bar changed', 'success')
         return redirect(url_for('website.index'))
 
+# endregion 
 
+#region Settings
 @main_panel.route('/settings')
 def settings_page():
     if not is_website_created():
@@ -146,16 +176,24 @@ def change_website_name():
     flash('Website name changed to {title}'.format(title=website.title),
           'success')
     return redirect(url_for('main_panel.admin_panel'))
-
+# endregion
 
 @main_panel.route('/pages', methods=['GET', 'POST'])
 def pages():
     if not is_website_created():
         flash('You dont have a website. Create a website first!', 'info')
         return redirect(url_for('main_panel.getting_started'))
-    return render_template('admin_panel/pages.html', title="pages")
+    return render_template('admin_panel/pages/pages.html', title="pages")
 
 
+@main_panel.route('/pages/create-page', methods=['GET', 'POST'])
+def create_new_page():
+    if not is_website_created():
+        flash('You dont have a website. Create a website first!', 'info')
+        return redirect(url_for('main_panel.getting_started'))
+    return render_template('admin_panel/pages/page2.html', title="pages")
+
+#region Content
 @main_panel.route('/apperance/content/content', methods=['GET', 'POST'])
 def content_page():
     if not is_website_created():
@@ -169,6 +207,20 @@ def content_page():
 def font_size_page():
     return render_template('admin_panel/apperance/content/font-size.html',
                            title="Font size")
+
+
+@main_panel.route('/apperance/content/font-size', methods=['GET', 'POST'])
+def change_font_size():
+    if not is_website_created():
+        flash('You dont have a website. Create a website first!', 'info')
+        return redirect(url_for('main_panel.getting_started'))
+    if request.method == 'POST':
+        navbarFont = request.form.get('navbarFontSize')
+        website = Website.query.get(1)
+        website.navbar_font_size = navbarFont
+        db.session.commit()
+        flash('Navigation font size changed', 'success')
+        return redirect(url_for('website.index'))
 
 
 @main_panel.route('/apperance/content/font-style', methods=['GET', 'POST'])
@@ -201,3 +253,4 @@ def background_style():
         db.session.commit()
         flash('Background changed', 'success')
         return redirect(url_for('website.index'))
+# endregion

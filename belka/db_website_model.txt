@@ -1,9 +1,5 @@
 
-class website(db.Model):
-    title = db.Column(db.String(200), nullable=False)
-    nav_style = db.Column(db.String(200), nullable=True)
-    page_background = db.Column(db.String(200), nullable=True)
-    font_style = db.Column(db.String(200), nullable=True)
-    font_size = db.Column(db.String(200), nullable=True)
-    footer_style = db.Column(db.String(200), nullable=True)
-
+            <input class="btn btn-info btn-lg" name="navbarFontFamily" style="font-family: Impact; font-size: xx-large;" value="Impact" type="submit">
+            <input class="btn btn-info btn-lg" name="navbarFontFamily" style="font-family: Candara; font-size: xx-large;" value="Candara" type="submit">
+            <input class="btn btn-info btn-lg" name="navbarFontFamily" style="font-family: Comic; font-size: xx-large;" value="Comic" type="submit">
+            <input class="btn btn-info btn-lg" name="navbarFontFamily" style="font-family: Verdana; font-size: xx-large;" value="Verdana" type="submit">
