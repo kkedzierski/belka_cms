@@ -54,3 +54,11 @@ class Website(db.Model):
 
     def __repr__(self):
         return "Website({title})".format(title=self.title)
+
+
+class Page(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    title_page = db.Column(db.String(200))
+
+    def __repr__(self):
+        return "Page({title})".format(title=self.title_page)

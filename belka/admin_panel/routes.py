@@ -1,7 +1,7 @@
 from flask import (redirect, render_template, url_for,
                    Blueprint, flash, request)
 from flask_login import login_required, current_user
-from belka.models import Website
+from belka.models import Website, Page
 from belka import db
 from belka.admin_panel.utils import is_website_created
 
@@ -73,7 +73,7 @@ def admin_panel():
         return redirect(url_for('main_panel.getting_started'))
     return render_template('admin_panel/admin-panel.html', title="Admin Panel")
 
-#region Navigation
+# region Navigation
 @main_panel.route('/apperance/navigation', methods=['GET', 'POST'])
 def navigation_page():
     if not is_website_created():
@@ -89,7 +89,7 @@ def change_nav_font_size():
         flash('You dont have a website. Create a website first!', 'info')
         return redirect(url_for('main_panel.getting_started'))
     if request.method == 'POST':
-        navbarFont = request.form.get('navbarFont')
+        navbarFont = request.form.get('navbarFontSize')
         website = Website.query.get(1)
         website.navbar_font_size = navbarFont
         db.session.commit()
@@ -129,9 +129,9 @@ def change_navigation():
         flash('Navigation bar changed', 'success')
         return redirect(url_for('website.index'))
 
-# endregion 
+# endregion
 
-#region Settings
+# region Settings
 @main_panel.route('/settings')
 def settings_page():
     if not is_website_created():
@@ -149,6 +149,7 @@ def delete_website():
         flash('You dont have a website. Create a website first!', 'info')
         return redirect(url_for('main_panel.getting_started'))
     db.session.query(Website).delete()
+    db.session.query(Page).delete()
     db.session.commit()
     flash('Website has been deleted', 'info')
     return redirect(url_for('main_panel.getting_started'))
@@ -178,20 +179,68 @@ def change_website_name():
     return redirect(url_for('main_panel.admin_panel'))
 # endregion
 
+
 @main_panel.route('/pages', methods=['GET', 'POST'])
 def pages():
     if not is_website_created():
         flash('You dont have a website. Create a website first!', 'info')
         return redirect(url_for('main_panel.getting_started'))
-    return render_template('admin_panel/pages/pages.html', title="pages")
+    pages = Page.query.all()
+    return render_template('admin_panel/pages/pages.html', title="pages",
+                           pages=pages)
 
 
-@main_panel.route('/pages/create-page', methods=['GET', 'POST'])
+@main_panel.route('/pages/create-new-page', methods=['GET', 'POST'])
 def create_new_page():
     if not is_website_created():
         flash('You dont have a website. Create a website first!', 'info')
         return redirect(url_for('main_panel.getting_started'))
-    return render_template('admin_panel/pages/page2.html', title="pages")
+    if request.method == 'POST':
+        title_page = request.form.get('page_name')
+        page = Page(title_page=title_page)
+        db.session.add(page)
+        db.session.commit()
+        flash('You created new page!', 'success')
+    pages = Page.query.all()
+    return render_template('admin_panel/pages/pages.html',
+                           pages=pages)
+
+
+@main_panel.route('/pages/page/operations', methods=['GET', 'POST'])
+def page_operations():
+    if not is_website_created():
+        flash('You dont have a website. Create a website first!', 'info')
+        return redirect(url_for('main_panel.getting_started'))
+    if request.form.get('page_select') is not None:
+        if request.form.get('action') == "Delete page":
+            title = request.form.get('page_select')
+            page = Page.query.filter_by(title_page=title).first()
+            db.session.delete(page)
+            db.session.commit()
+            flash('This page has been deleted!', 'success')
+            return redirect(url_for('main_panel.pages'))
+        if request.form.get('action') == "Change page name":
+            title = request.form.get('page_select')
+            return render_template('admin_panel/pages/change-page-name.html',
+                                   title="Change page name",
+                                   page_title=title)
+    else:
+        flash('You need to select pages', 'info')
+        return redirect(url_for('main_panel.pages'))
+
+
+@main_panel.route('/pages/page/change-page-name', methods=['GET', 'POST'])
+def change_page_name():
+    if not is_website_created():
+        flash('You dont have a website. Create a website first!', 'info')
+        return redirect(url_for('main_panel.getting_started'))
+    title = request.form.get('page_name')
+    page = Page.query.filter_by(title_page=title).first()
+    page.title_page = request.form.get('new_page_name')
+    db.session.commit()
+    flash('Page name changed to {title}'.format(title=page.title_page),
+          'success')
+    return redirect(url_for('main_panel.pages'))
 
 #region Content
 @main_panel.route('/apperance/content/content', methods=['GET', 'POST'])
