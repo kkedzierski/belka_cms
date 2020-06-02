@@ -1,0 +1,28 @@
+{% extends 'admin_panel/layout.html' %}
+{% block content %}
+<h1>Footer</h1>
+<p>Change footer style</p>
+<div class="row">
+<div class="col mt-4 change_navbar_block ">
+    <img src="/static/images/navbar_blue.png" alt="">
+    <form action="{{ url_for('main_panel.change_navigation') }}"  method="POST">
+        <input type="hidden" name="footer_style" value="blue">
+        <input value="Change" type="submit" class="btn btn-info mt-1">
+    </form>
+</div>
+<div class="col change_navbar_block mt-4 ">
+    <img src="/static/images/navbar_dark.jpg" alt="">
+    <form action="{{ url_for('main_panel.change_navigation') }}"  method="POST">
+        <input type="hidden" name="footer_style" value="dark">
+        <input class="btn btn-info mt-1" value="Change" type="submit">
+    </form>
+</div>
+<div class="col mt-4 change_navbar_block ">
+        <img src="/static/images/navbar_green.png" alt="">
+        <form action="{{ url_for('main_panel.change_navigation') }}" method="POST">
+            <input type="hidden" name="footer_style" value="green">
+            <input class="btn btn-info mt-1" value="Change" type="submit">
+        </form>
+</div>
+</div>
+{% endblock content %}

@@ -1,0 +1,27 @@
+{% extends 'admin_panel/layout.html' %}
+{% block content %}
+
+<div class="row">
+    <div class="col-lg-4 belka_block text-center mt-4 mr-2">
+        <h3>Add page</h3>
+        <form action="{{ url_for('main_panel.create_new_page')  }}" method="POST">
+            <input class="form-control" type="text" name="page_name" placeholder="page name">
+            <input class="mt-4 btn btn-info btn-block" type="submit" value="Add page">
+        </form>  
+    </div>
+    <div class="col-lg-4 belka_block text-center mt-4">
+        <h3>Your pages</h3>
+    <form action="{{ url_for('main_panel.page_operations')}}" method="POST">
+        <select name="page_select" class="form-control">
+            {% for page in pages %}
+            <option name="page_select" value="{{ page.title_page }}">{{ page.title_page }}</option>      
+            {% endfor %} 
+        </select>   
+        <input class="mt-4 btn btn-info btn-block" name="action" type="submit" value="Change page name">
+        <input class="btn mt-2 btn-danger btn-block" name="action" type="submit" value="Delete page">    
+    </form>
+        
+
+    </div>
+</div>
+{% endblock content %}

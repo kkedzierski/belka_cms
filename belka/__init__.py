@@ -3,9 +3,11 @@ from belka.config import Config
 from flask_login import LoginManager
 from flask_sqlalchemy import SQLAlchemy
 from flask_bcrypt import Bcrypt
+from flask_migrate import Migrate
 
 db = SQLAlchemy()
 bcrypt = Bcrypt()
+migrate = Migrate(compare_type=True)
 
 login_manager = LoginManager()
 login_manager.login_view = 'main.sign_in'
@@ -19,6 +21,7 @@ def create_app(config_class=Config):
     db.init_app(app)
     bcrypt.init_app(app)
     login_manager.init_app(app)
+    migrate.init_app(app, db)
 
     from belka.admin_panel.routes import main_panel
     from belka.authentication_panel.routes import authentication

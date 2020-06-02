@@ -24,15 +24,15 @@
             </div>
             <ul class="list-unstyled CTAs">
                 <li>
-                    <a href="{{url_for('website.index') }}" class="button">Yours Webiste</a>
+                    <a href="{{url_for('website.index') }}" class="button">Your Webiste</a>
                 </li>
             </ul>
             <ul class="list-unstyled components">
                 <li>
-                    <a href="{{ url_for('main_panel.getting_started') }}">Main Panel</a>
+                    <a href="{{ url_for('main_panel.admin_panel') }}">Main Panel</a>
                 </li>
                 <li>
-                    <a href="#">Users</a>
+                    <a href="{{ url_for('main_panel.users_page') }}">Users</a>
                 </li>
                 <li class="active">
                     <a href="#homeSubmenu" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle">Apparence</a>
@@ -41,7 +41,7 @@
                             <a href="{{ url_for('main_panel.navigation_page')}}">Navigation</a>
                         </li>
                         <li>
-                            <a href="#">Content</a>
+                            <a href="{{ url_for('main_panel.content_page')}}">Content</a>
                         </li>
                         <li>
                             <a href="#">Footer</a>
@@ -49,7 +49,10 @@
                     </ul>
                 </li>
                 <li>
-                    <a href="#">Pages</a>
+                    <a href="{{ url_for('main_panel.pages') }}">Pages</a>
+                </li>
+                <li>
+                    <a href="{{ url_for('main_panel.pages') }}">Posts</a>
                 </li>
                 <li>
                     <a href="{{ url_for('main_panel.settings_page') }}">Settings</a>

@@ -1,9 +1,0 @@
-
-class website(db.Model):
-    title = db.Column(db.String(200), nullable=False)
-    nav_style = db.Column(db.String(200), nullable=True)
-    page_background = db.Column(db.String(200), nullable=True)
-    font_style = db.Column(db.String(200), nullable=True)
-    font_size = db.Column(db.String(200), nullable=True)
-    footer_style = db.Column(db.String(200), nullable=True)
-

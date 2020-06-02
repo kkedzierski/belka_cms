@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+{% for website in website %}
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    {% if title %}
+        <title>{{ website.title }} - {{  title  }}</title>
+    {% else %}
+        <title>{{ website.title }}</title>
+    {% endif %}
+     <!-- Bootstrap CSS CDN -->
+     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+     <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='main_website.css')}}">
+
+     <style>
+       body{
+          background-image: url("/static/images/{{ website.page_background }}");
+       }
+       .nav-link{
+        font-family: '{{website.navbar_font_style}}';
+       }    
+       .nav-link{
+        font-size: {{ website.navbar_font_size }}px;
+       }
+     </style>
+     <script src="https://use.fontawesome.com/7f3c0aa4e3.js"></script>
+</head>
+<body>
+<!--Navbar -->
+{% if website.show_admin_panel %}
+<nav class="navbar navbar-dark bg-dark">
+    <a class="fa fa-arrow-left text-white" href="{{ url_for('main_panel.admin_panel') }}"> Back to Admin Panel</a>
+</nav>
+{% endif %}
+<nav class="navbar navbar-expand-lg {{ website.nav_style }}">
+    <a class="navbar-brand" href="{{ url_for('website.index') }}">{{ website.title }}</a>
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNavDropdown" aria-controls="navbarNavDropdown" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarNavDropdown">
+      <ul class="navbar-nav">
+      {% for page in pages %}
+        <li class="nav-item">
+          <a class="nav-link" href="{{ url_for('main_panel.go_to_page', page_name=page.title_page) }}">{{ page.title_page }}</a>
+        </li>
+      {% endfor %}
+      </ul>
+    </div>
+  </nav>
+  <!--/.Navbar -->
+<!-- Content -->
+<div class="container">
+  <div class="row">
+      <div class="col-md-12">
+          {% with messages = get_flashed_messages(with_categories=true) %}
+          {% if messages %}
+              {% for category, message in messages %}
+                  <div class="alert alert-{{ category }}" role="alert">
+                      {{ message }}
+                  </div>
+              {% endfor %}
+          {% endif%}
+          {% endwith %}
+      </div>
+  </div>
+  {% block content %}{% endblock %}
+
+<!-- Footer -->
+<footer id="sticky-footer" class="page-footer navbar-dark bg-success font-small ">
+
+    <!-- Copyright -->
+    <div class="footer-copyright text-center text-white py-3">© 2020 Copyright: Belka CMS
+    </div>
+    <!-- Copyright -->
+  
+</footer>
+  <!-- Footer -->
+  <script src="https://code.jquery.com/jquery-3.4.1.slim.min.js" integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
+  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js" integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6" crossorigin="anonymous"></script>
+
+</body>
+{% endfor %}
+</html>

@@ -1,0 +1,37 @@
+{% extends 'admin_panel/layout.html' %}
+{% block content %}
+<h1>Background page</h1>
+<p>Here you can choose background for your pages</p>
+<p>Belka cms create for you some backgrounds.</p>
+<p>Choose one and use for your website</p>
+<div class="row">
+<div class="col mt-4 belka_block ">
+    <img src="/static/images/hotel.png" alt="">
+    <form action="{{ url_for('main_panel.background_style')}}" method="POST">
+        <input type="hidden" name="backround_style" value="hotel">
+        <input value="Change" type="submit" class="btn btn-info btn-block mt-2">
+    </form>
+</div>
+<div class="col belka_block mt-4 ">
+    <img src="/static/images/spikes.png" alt="">
+    <form action="{{ url_for('main_panel.background_style')}}" method="POST">
+        <input type="hidden" name="backround_style" value="spikes">
+        <input class="btn btn-info btn-block mt-2" value="Change" type="submit">
+    </form>
+</div>
+<div class="col mt-4 belka_block ">
+        <img src="/static/images/painting.png" alt="">
+        <form action="{{ url_for('main_panel.background_style')}}" method="POST">
+            <input type="hidden" name="backround_style" value="painting">
+            <input class="btn btn-info btn-block mt-2" value="Change" type="submit">
+        </form>
+</div>
+<div class="col mt-4 belka_block">
+    <img src="/static/images/flower.png" alt="">
+    <form action="{{ url_for('main_panel.background_style')}}" method="POST">
+        <input type="hidden" name="backround_style" value="flower">
+        <input class="btn btn-info btn-block mt-2" value="Change" type="submit">
+    </form>
+</div>
+</div>
+{% endblock content %}

@@ -44,9 +44,23 @@ class Website(db.Model):
     title = db.Column(db.String(200), nullable=False)
     nav_style = db.Column(db.String(200), nullable=True)
     page_background = db.Column(db.String(200), nullable=True)
-    font_style = db.Column(db.String(200), nullable=True)
-    font_size = db.Column(db.String(200), nullable=True)
+    navbar_font_style = db.Column(db.String(200), nullable=True)
+    title_post_font_style = db.Column(db.String(200), nullable=True)
+    post_text_font_style = db.Column(db.String(200), nullable=True)
+    navbar_font_size = db.Column(db.String(200), nullable=True)
+    title_post_font_size = db.Column(db.String(200), nullable=True)
+    post_text_font_size = db.Column(db.String(200), nullable=True)
     footer_style = db.Column(db.String(200), nullable=True)
+    show_admin_panel = db.Column(db.Boolean(), nullable=False,
+                                 default=True)
 
     def __repr__(self):
         return "Website({title})".format(title=self.title)
+
+
+class Page(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    title_page = db.Column(db.String(200))
+
+    def __repr__(self):
+        return "Page({title})".format(title=self.title_page)

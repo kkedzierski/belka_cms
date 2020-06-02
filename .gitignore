@@ -136,3 +136,18 @@ dmypy.json
 
 # Cython debug symbols
 cython_debug/
+
+.DS_Store
+*.pyc
+*.pyo
+*.egg-info/
+dist/
+build/
+docs/_build/
+.tox/
+.idea/
+.pytest_cache/
+htmlcov/
+.coverage
+.coverage.*
+.vscode/

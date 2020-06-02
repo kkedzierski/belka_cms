@@ -2,29 +2,78 @@
 {% block content %}
 <h1>Navigation bar</h1>
 <p>Having easy-to-use navigation is important for any web site.</p>
-<p>Belka cms create for you some fully responsive navigation.</p>
-<p>Choose one and use for your website</p>
+<p>Here you can choose navbar font size and font style for your website.</p>
 <div class="row">
-<div class="col mt-4 belka_block ">
-    <img src="/static/images/navbar_blue.png" alt="">
-    <form action="{{ url_for('main_panel.change_navigation') }}" class="float-right" method="POST">
+    <div class="col-lg-6 belka_block mt-4">
+        <h3>Navbar Font Size</h3>
+        <form action="{{ url_for('main_panel.change_nav_font_size')}}" method="POST">
+                <div class="slidecontainer">
+                    <input type="range" min="10" max="40" name="navbarFontSize" value="16" class="slider" id="navbarSliderID">
+                </div>
+              <p>Value: <span id="navbarOutputID"></span></p>
+              <div id="NavbarID">Navbar</div>
+            <input class="mt-4 btn btn-info btn-block" type="submit" value="Change size">
+        </form>
+    </div>
+
+    <div class="col-lg-6 mt-4 belka_block ">
+        <legend>Navigation Font style</legend>
+        <form class="float-left mt-2 mr-2" action="{{ url_for('main_panel.change_nav_font_family') }}" method="POST">
+            <input class="btn btn-info btn-lg mt-1" name="navbarFontFamily" style="font-family: Arial; font-size: xx-large;" value="Arial" type="submit">  
+            <input class="btn btn-info btn-lg mt-1" name="navbarFontFamily" style="font-family: 'Times New Roman', Times, serif; font-size: xx-large;" value="Times" type="submit"> 
+            <input class="btn btn-info btn-lg mt-1" name="navbarFontFamily" style="font-family: Impact; font-size: xx-large;" value="Impact" type="submit">
+            <input class="btn btn-info btn-lg mt-1" name="navbarFontFamily" style="font-family: Candara; font-size: xx-large;" value="Candara" type="submit">
+            <input class="btn btn-info btn-lg mt-1" name="navbarFontFamily" style="font-family: Comic; font-size: xx-large;" value="Comic" type="submit">
+            <input class="btn btn-info btn-lg mt-1" name="navbarFontFamily" style="font-family: Verdana; font-size: xx-large;" value="Verdana" type="submit">
+
+        </form>
+    </div>
+</div>
+<h3 class="mt-4"> Belka cms create for you some fully responsive navigation too</h3>   
+<p>Choose one and use for your website</p>
+
+<div class="row">  
+<div class="col-lg-6 change_navbar_block">
+    <img src="/static/images/navbar_blue.png" width="510" alt="">
+    <form action="{{ url_for('main_panel.change_navigation') }}"  method="POST">
         <input type="hidden" name="nav_style" value="blue">
-        <input value="Change" type="submit" class="btn btn-info">
+        <input value="Change" type="submit" class="float-right btn btn-block btn-info mt-1">
     </form>
 </div>
-<div class="col belka_block mt-4 ">
-    <img src="/static/images/navbar_dark.jpg" alt="">
-    <form action="{{ url_for('main_panel.change_navigation') }}" class="float-right" method="POST">
+<div class="col-lg-6 change_navbar_block">
+    <img src="/static/images/navbar_dark.jpg" width="510" alt="">
+    <form action="{{ url_for('main_panel.change_navigation') }}"  method="POST">
         <input type="hidden" name="nav_style" value="dark">
-        <input class="btn btn-info btn-block" value="Change" type="submit">
+        <input class="btn btn-info btn-block mt-1" value="Change" type="submit">
     </form>
 </div>
-<div class="col mt-4 belka_block ">
-        <img src="/static/images/navbar_green.png" alt="">
-        <form action="{{ url_for('main_panel.change_navigation') }}" class="float-right" method="POST">
+<div class="col-lg-6 mt-4 change_navbar_block ">
+        <img src="/static/images/navbar_green.png" width="510" alt="">
+        <form action="{{ url_for('main_panel.change_navigation') }}" method="POST">
             <input type="hidden" name="nav_style" value="green">
-            <input class="btn btn-info btn-block" value="Change" type="submit">
+            <input class="btn btn-info btn-block mt-1" value="Change" type="submit">
         </form>
 </div>
 </div>
+
+<script>
+    function show_slider_result(sliderID, outputID, textToChangeID){
+       var slider = document.getElementById(sliderID);
+        var output = document.getElementById(outputID);
+        output.innerHTML = slider.value; 
+    
+        slider.oninput = function() {
+        output.innerHTML = this.value;
+        }
+    
+        var text_to_show_changes = document.getElementById(textToChangeID)
+        slider.addEventListener('input', function() {
+            var size = slider.value;
+            text_to_show_changes.style.fontSize = size + "px";
+        });
+        
+    }
+    show_slider_result("navbarSliderID", "navbarOutputID", "NavbarID")
+</script>
+
 {% endblock content %}
