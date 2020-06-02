@@ -4,7 +4,11 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{{ website.title }}</title>
+    {% if title %}
+        <title>{{ website.title }} - {{  title  }}</title>
+    {% else %}
+        <title>{{ website.title }}</title>
+    {% endif %}
      <!-- Bootstrap CSS CDN -->
      <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
      <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='main_website.css')}}">
@@ -15,36 +19,32 @@
        }
        .nav-link{
         font-family: '{{website.navbar_font_style}}';
-        font-size: {{ website.navbar_font_size }}px;
        }    
+       .nav-link{
+        font-size: {{ website.navbar_font_size }}px;
+       }
      </style>
      <script src="https://use.fontawesome.com/7f3c0aa4e3.js"></script>
 </head>
 <body>
 <!--Navbar -->
+{% if website.show_admin_panel %}
 <nav class="navbar navbar-dark bg-dark">
     <a class="fa fa-arrow-left text-white" href="{{ url_for('main_panel.admin_panel') }}"> Back to Admin Panel</a>
 </nav>
+{% endif %}
 <nav class="navbar navbar-expand-lg {{ website.nav_style }}">
-    <a class="navbar-brand" href="#">{{ website.title }}</a>
+    <a class="navbar-brand" href="{{ url_for('website.index') }}">{{ website.title }}</a>
     <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNavDropdown" aria-controls="navbarNavDropdown" aria-expanded="false" aria-label="Toggle navigation">
       <span class="navbar-toggler-icon"></span>
     </button>
     <div class="collapse navbar-collapse" id="navbarNavDropdown">
       <ul class="navbar-nav">
-
+      {% for page in pages %}
         <li class="nav-item">
-          <a class="nav-link" href="#">Rooms</a>
+          <a class="nav-link" href="{{ url_for('main_panel.go_to_page', page_name=page.title_page) }}">{{ page.title_page }}</a>
         </li>
-        <li class="nav-item">
-          <a class="nav-link" href="#">Price</a>
-        </li>
-        <li class="nav-item">
-            <a class="nav-link" href="#">Galery</a>
-          </li>
-        <li class="nav-item">
-            <a class="nav-link" href="#">Contact us</a>
-        </li>
+      {% endfor %}
       </ul>
     </div>
   </nav>
@@ -64,6 +64,7 @@
           {% endwith %}
       </div>
   </div>
+  {% block content %}{% endblock %}
 
 <!-- Footer -->
 <footer id="sticky-footer" class="page-footer navbar-dark bg-success font-small ">

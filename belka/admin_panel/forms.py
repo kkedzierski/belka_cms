@@ -1,11 +1,12 @@
 from flask_wtf import FlaskForm
-from wtforms import StringField, PasswordField, SubmitField, BooleanField
+from wtforms import (StringField, PasswordField,
+                     SubmitField, BooleanField, RadioField)
 from wtforms.validators import (DataRequired, Length, Email,
                                 EqualTo, ValidationError)
 from belka.models import User
 
 
-class RegistrationForm(FlaskForm):
+class CreateUserForm(FlaskForm):
     username = StringField('Username',
                            validators=[DataRequired(), Length(min=2, max=20)],
                            render_kw={"placeholder": "Login"})
@@ -18,6 +19,9 @@ class RegistrationForm(FlaskForm):
                                                  EqualTo('password')],
                                      render_kw={"placeholder":
                                                 "Confirm password"})
+    user_role = RadioField('Role', choices=[('1', 'Admin'),
+                                            ('2', 'Editor'),
+                                            ('3', 'Author')])
     submit = SubmitField('Sign Up')
 
     def validate_username(self, username):
@@ -32,11 +36,3 @@ class RegistrationForm(FlaskForm):
             raise ValidationError("Account with this email exist"
                                   "choose another email")
 
-
-class LoginForm(FlaskForm):
-    email = StringField('Email', validators=[DataRequired(), Email()],
-                        render_kw={"placeholder": "Email"})
-    password = PasswordField('Password', validators=[DataRequired()],
-                             render_kw={"placeholder": "Password"})
-    remember = BooleanField('Remember me')
-    submit = SubmitField('Sign In')

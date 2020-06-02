@@ -51,6 +51,8 @@ class Website(db.Model):
     title_post_font_size = db.Column(db.String(200), nullable=True)
     post_text_font_size = db.Column(db.String(200), nullable=True)
     footer_style = db.Column(db.String(200), nullable=True)
+    show_admin_panel = db.Column(db.Boolean(), nullable=False,
+                                 default=True)
 
     def __repr__(self):
         return "Website({title})".format(title=self.title)

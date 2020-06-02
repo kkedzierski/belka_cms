@@ -1,6 +1,6 @@
 {% extends 'admin_panel/layout.html' %}
 {% block content %}
-
+{% for website in website %}
 <div class="row">
     <div class="col-lg-4 belka_block text-center mt-4 mr-2">
         <h3>Main settings</h3>
@@ -11,6 +11,14 @@
     </div>
     <div class="col-lg-4 belka_block text-center mt-4">
         <h3>Other settings</h3>
+        <form action="{{ url_for('main_panel.show_admin_panel') }}" method="POST">
+            {% if website.show_admin_panel %}
+                <input checked class="mt-4" name="admin_panel_view" onChange="this.form.submit()" type="checkbox" >
+            {% else %}
+                <input class="mt-4" name="admin_panel_view" onChange="this.form.submit()" type="checkbox" >
+            {% endif %}
+            <label for="admin_panel_view">Show admin panel</label>
+        </form>
     </div>
 </div>
 
@@ -33,5 +41,5 @@
     </div>
     </div>
 </div>
-
+{% endfor %}
 {% endblock content %}
