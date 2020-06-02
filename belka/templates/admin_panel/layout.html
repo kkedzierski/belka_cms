@@ -16,6 +16,7 @@
 </head>
 
 <body>
+{% for website in website %}
     <div class="wrapper">
         <!-- Sidebar  -->
         <nav id="sidebar">
@@ -24,7 +25,7 @@
             </div>
             <ul class="list-unstyled CTAs">
                 <li>
-                    <a href="{{url_for('website.index') }}" class="button">Your Webiste</a>
+                    <a href="{{url_for('website.index', website_name=website.title) }}" class="button">Your Webiste</a>
                 </li>
             </ul>
             <ul class="list-unstyled components">
@@ -121,6 +122,6 @@
             });
         });
     </script>
+{% endfor %}
 </body>
-
 </html>

@@ -8,7 +8,7 @@ from belka import bcrypt, db
 authentication = Blueprint('authentication', __name__)
 
 
-@authentication.route('/')
+@authentication.route('/', methods=['GET', 'POST'])
 @authentication.route('/sign_up', methods=['GET', 'POST'])
 def register():
     if current_user.is_authenticated and len(Website.query.all()) != 0:
