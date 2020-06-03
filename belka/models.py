@@ -39,6 +39,22 @@ class Post(db.Model):
                                       date_posted=self.date_posted)
 
 
+class WebsiteLink(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    website_name = db.Column(db.String, nullable=False)
+    user_id = db.Column(db.ForeignKey('user.id'), nullable=False)
+    website_id = db.Column(db.ForeignKey('website.id'), nullable=False)
+
+    def __repr__(self):
+        return "WebsiteLink({website_name},"\
+               "WebisteLink id = {id},"\
+               "website_id= {website_id},"\
+               "user id = {user_id})".format(website_name=self.website_name,
+                                             id=self.id,
+                                             website_id=self.website_id,
+                                             user_id=self.user_id)
+
+
 class Website(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     title = db.Column(db.String(200), nullable=False)
@@ -61,6 +77,9 @@ class Website(db.Model):
 class Page(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     title_page = db.Column(db.String(200))
+    website_id = db.Column(db.ForeignKey('website.id'), nullable=False)
 
     def __repr__(self):
-        return "Page({title})".format(title=self.title_page)
+        return "Page({title}, "\
+               "website_id = {website_id})".format(title=self.title_page,
+                                                   website_id=self.website_id)
