@@ -2,6 +2,7 @@ from flask_login import current_user
 from belka.models import Website, WebsiteLink, Page
 import os
 import shutil
+import enum
 
 
 def get_current_website(current_user_id):
@@ -11,6 +12,11 @@ def get_current_website(current_user_id):
         return website
     else:
         return None
+
+
+def get_website_by_id(website_id):
+    website = Website.query.filter_by(id=website_id).first()
+    return website
 
 
 def get_current_website_pages(current_user_id):
@@ -98,3 +104,16 @@ def create_home_page(dir_name):
     new_page_path = os.path.join(path_to_save_page, "index.html")
     with open(new_page_path, "w") as file:
         file.write(page_template)
+
+
+class UserRoles(enum.Enum):
+    admin = 1
+    editor = 2
+    author = 3
+
+
+def get_user_role(role):
+    for roles in UserRoles:
+        if role == roles.name:
+            return role
+    return None

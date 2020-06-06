@@ -1,8 +1,9 @@
 from flask import (redirect, render_template, url_for,
                    Blueprint, flash, request, g, abort)
+import validators
 from flask_login import login_required, current_user
-from belka.models import Website, Page, WebsiteLink
-from belka import db
+from belka.models import Website, Page, WebsiteLink, User
+from belka import db, bcrypt
 from belka.admin_panel.utils import (is_user_website_created,
                                      create_new_empty_page,
                                      delete_page,
@@ -13,7 +14,9 @@ from belka.admin_panel.utils import (is_user_website_created,
                                      create_home_page,
                                      get_current_website,
                                      is_directory_exist,
-                                     get_current_website_pages)
+                                     get_current_website_pages,
+                                     get_user_role,
+                                     get_website_by_id)
 from belka.admin_panel.forms import CreateUserForm
 
 
@@ -23,6 +26,9 @@ main_panel = Blueprint('main_panel', __name__)
 @main_panel.route('/getting-started')
 @login_required
 def getting_started():
+    if current_user.user_role != 1:
+        flash('You dont have access to this page', 'danger')
+        redirect(url_for('main_panel.admin_panel'))
     if is_user_website_created(current_user.id):
         flash('You cannot create another website. You have one!', 'info')
         return redirect(url_for('main_panel.admin_panel'))
@@ -45,18 +51,19 @@ def create_website_page():
 def create_website():
     if request.method == "POST":
         website_title = request.form.get('website_name')
+        if not validators.domain(website_title):
+            flash('Create correct domain adress like: example.com', 'info')
+            return redirect(url_for('main_panel.create_website_page'))
         if is_directory_exist(website_title):
             flash('Website {website_name} exist '
                   'choose another name'.format(website_name=website_title), 'danger')
             return redirect(url_for('main_panel.create_website_page'))
         create_directory(website_title)
         create_home_page(website_title)
-        g.user = current_user.get_id()
         website = Website(title=website_title)
         db.session.add(website)
         db.session.commit()
         website_link = WebsiteLink(website_name=website_title,
-                                   user_id=g.user,
                                    website_id=website.id)
         db.session.add(website_link)
         db.session.commit()
@@ -97,6 +104,7 @@ def admin_panel():
     return render_template('admin_panel/admin-panel.html', title="Admin Panel",
                            website=website)
 
+
 #region users
 @main_panel.route('/users', methods=['GET', 'POST'])
 def users_page():
@@ -105,8 +113,23 @@ def users_page():
         return redirect(url_for('main_panel.getting_started'))
     form = CreateUserForm()
     website = get_current_website(current_user.id)
+    if form.validate_on_submit():
+        hashed_password = bcrypt.generate_password_hash(form.password.data
+                                                        ).decode('utf-8')
+        user_role = get_user_role(form.user_role.data)
+        user = User(username=form.username.data,
+                    email=form.email.data,
+                    password=hashed_password,
+                    user_role=user_role)
+        db.session.add(user)
+        db.session.commit()
+        flash('Your create user: '
+              '{user_name}'.format(user_name=user.username),
+              'success')
+        return redirect(url_for('main_panel.users_page'))
     return render_template('admin_panel/users.html', website=website,
                            form=form)
+
 #endregion
 
 #region Navigation
@@ -312,6 +335,8 @@ def change_page_name():
 # region Settings
 @main_panel.route('/settings')
 def settings_page():
+    user = User.query.filter_by(username="test").first()
+    print(user.websitelink)
     if not is_user_website_created(current_user.id):
         flash('You dont have a website. Create a website first!', 'info')
         return redirect(url_for('main_panel.getting_started'))
@@ -330,7 +355,8 @@ def delete_website():
     WebsiteLink.query.filter(WebsiteLink.id == website_link.id).delete()
     delete_directory(website.title)
     Website.query.filter(Website.id == website.id).delete()
-    db.session.query(Page).delete()
+    Page.query.filter(Page.website_id == website.id).delete()
+    User.query.filter(User.website_id == website.id).delete()
     db.session.commit()
     flash('Website has been deleted', 'info')
     return redirect(url_for('main_panel.getting_started'))
@@ -354,6 +380,9 @@ def change_website_name():
         return redirect(url_for('main_panel.getting_started'))
     website = get_current_website(current_user.id)
     new_website_name = request.form.get('website_name')
+    if not validators.domain(new_website_name):
+        flash('Create correct domain adress like: example.com', 'info')
+        return redirect(url_for('main_panel.change_website_name_page'))
     change_directory_name(website.title, new_website_name)
     website.title = new_website_name
     db.session.commit()
@@ -369,7 +398,6 @@ def show_admin_panel():
         return redirect(url_for('main_panel.getting_started'))
     website = get_current_website(current_user.id)
     if request.form.get('admin_panel_view'):
-        print(request.form.get('admin_panel_view'))
         flash('Admin panel turn on', 'success')
         website.show_admin_panel = True
         db.session.commit()

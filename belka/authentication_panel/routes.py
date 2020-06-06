@@ -4,7 +4,9 @@ from flask_login import login_user, logout_user, current_user, login_required
 from belka.authentication_panel.forms import RegistrationForm, LoginForm
 from belka.models import User, Website
 from belka import bcrypt, db
-from belka.authentication_panel.utils import is_user_website_created
+from belka.authentication_panel.utils import (is_user_website_created,
+                                              UserRoles)
+
 
 authentication = Blueprint('authentication', __name__)
 
@@ -19,12 +21,12 @@ def register():
             return redirect(url_for('main_panel.getting_started'))
     form = RegistrationForm()
     if form.validate_on_submit():
-        print("Your validate is great!")
         hashed_password = bcrypt.generate_password_hash(form.password.data
                                                         ).decode('utf-8')
         user = User(username=form.username.data,
                     email=form.email.data,
-                    password=hashed_password)
+                    password=hashed_password,
+                    user_role=UserRoles.admin.value)
         db.session.add(user)
         db.session.commit()
         flash('Your account has been created!, You can log in',
@@ -47,15 +49,15 @@ def login():
         if user and bcrypt.check_password_hash(user.password,
                                                form.password.data):
             login_user(user, remember=form.remember.data)
-            next_page = request.args.get('next')
+            # next_page = request.args.get('next')
             flash('You have logged in successful!', 'success')
-            if next_page:
-                return redirect(next_page)
+            # if next_page:
+            #     return redirect(next_page)
+            # else:
+            if is_user_website_created(current_user.id):
+                return redirect(url_for('main_panel.admin_panel'))
             else:
-                if is_user_website_created(current_user.id):
-                    return redirect(url_for('main_panel.admin_panel'))
-                else:
-                    return redirect(url_for('main_panel.getting_started'))
+                return redirect(url_for('main_panel.getting_started'))
         else:
             flash('Login Unsuccessful. Please check your email and passoword',
                   'danger')

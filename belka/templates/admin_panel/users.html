@@ -2,22 +2,23 @@
 {% block content %}
 <div class="col-lg-5 mt-4 text-center">
     <div class="belka_block mt-4 mb-6">
+        <legend class="text-center">Create User</legend>
         <form method="POST" action="">
             {{ form.hidden_tag() }}
             <!-- Login -->
             {% if form.username.errors %}
-                {{ form.username(class="is-invalid") }}
+                {{ form.username(class="form-control is-invalid") }}
                 <div class="invalid-feedback">
                     {% for error in form.username.errors %}
                         <span>{{ error }}</span>
                     {% endfor %}
                 </div>
             {% else %}
-                {{ form.username() }}
+                {{ form.username(class="form-control mb-2") }}
             {% endif %}
             <!-- Email -->
             {% if form.email.errors %}
-                {{ form.email(class="is-invalid") }}
+                {{ form.email(class="form-control is-invalid") }}
                 <div class="invalid-feedback">
                     {% for error in form.email.errors %}
                         <span>{{ error }}</span>
@@ -25,11 +26,11 @@
                     {% endfor %}
                 </div>
             {% else %}
-                {{ form.email(class="") }}
+                {{ form.email(class="form-control mb-2") }}
             {% endif %}
             <!-- Password -->
             {% if form.password.errors %}
-            {{ form.password(class="is-invalid") }}
+            {{ form.password(class="form-control is-invalid") }}
                 <div class="invalid-feedback">
                     {% for error in form.password.errors %}
                         <span>{{ error }}</span>
@@ -37,11 +38,11 @@
                     {% endfor %}
                 </div>
             {% else %}
-                {{ form.password() }}
+                {{ form.password(class="form-control mb-2") }}
             {% endif %}
             <!-- Confirm password -->
             {% if form.confirm_password.errors %}
-            {{ form.confirm_password(class="is-invalid") }}
+            {{ form.confirm_password(class="form-control is-invalid") }}
                 <div class="invalid-feedback">
                     {% for error in form.confirm_password.errors %}
                         <span>{{ error }}</span>
@@ -49,23 +50,23 @@
                     {% endfor %}
                 </div>
             {% else %}
-                {{ form.confirm_password() }}
+                {{ form.confirm_password(class="form-control mb-2") }}
             {% endif %}
             <!-- Choose role -->
-            {% if form.confirm_password.errors %}
-            {{ form.user_role(class="is-invalid") }}
+            
+            {% if form.user_role.errors %}
+            <div class="form-check form-check-inline">
+            {{ form.user_role(class="form-check-input is-invalid list-unstyled") }}
                 <div class="invalid-feedback">
-                    {% for error in form.user_role.errors %}
-                        <span>{{ error }}</span>
-
-                    {% endfor %}
+                        You must choose role for user!
                 </div>
+            </div>
             {% else %}
-            <div class="custom-control custom-radio">
-                {{ form.user_role() }}
+            <div class="form-check form-check-inline">
+                {{ form.user_role(class="p-2 mr-4 form-check-input is-invalid list-unstyled") }}
             </div>
             {% endif %}
-            {{ form.submit(class="btn btn-outline-info") }}          
+            {{ form.submit(class="btn btn-outline-info") }}    
         </form>
     </div>
 </div>

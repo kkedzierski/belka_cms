@@ -223,3 +223,13 @@ a.article:hover {
     background: #7386D5; /* Green background */
     cursor: pointer; /* Cursor on hover */
   }
+
+input[type=radio]{
+    margin-left: 10px;
+}
+
+.disabled {
+    pointer-events:none; 
+    opacity:0.6;
+}
+

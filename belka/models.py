@@ -15,6 +15,9 @@ class User(db.Model, UserMixin):
     image_file = db.Column(db.String(20), nullable=False,
                            default='default.jpg')
     password = db.Column(db.String(60), nullable=False)
+    user_role = db.Column(db.Integer)
+    websiteLink_id = db.Column(db.ForeignKey('websitelink.id'),
+                               nullable=True)
     posts = db.relationship('Post', backref='author', lazy=True)
 
     def __repr__(self):
@@ -31,6 +34,7 @@ class Post(db.Model):
     date_posted = db.Column(db.DateTime, nullable=False,
                             default=datetime.utcnow)
     content = db.Column(db.Text, nullable=False)
+    post_page = db.Column(db.String, nullable=True)
     user_id = db.Column(db.ForeignKey('user.id'), nullable=False)
 
     def __repr__(self):
@@ -42,17 +46,16 @@ class Post(db.Model):
 class WebsiteLink(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     website_name = db.Column(db.String, nullable=False)
-    user_id = db.Column(db.ForeignKey('user.id'), nullable=False)
     website_id = db.Column(db.ForeignKey('website.id'), nullable=False)
+    users = db.relationship('User', backref='author', lazy=True)
 
     def __repr__(self):
         return "WebsiteLink({website_name},"\
                "WebisteLink id = {id},"\
                "website_id= {website_id},"\
-               "user id = {user_id})".format(website_name=self.website_name,
-                                             id=self.id,
-                                             website_id=self.website_id,
-                                             user_id=self.user_id)
+               "".format(website_name=self.website_name,
+                         id=self.id,
+                         website_id=self.website_id)
 
 
 class Website(db.Model):

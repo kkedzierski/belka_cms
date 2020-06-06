@@ -1,5 +1,0 @@
-class WebsiteLink(db.Model):
-    id = db.Column(db.Integer, primary_key=True)
-    website_name = db.Column(db.String, nullable=False)
-    user_id = db.Column(db.ForeignKey('user.id'), nullable=False)
-    website_id = db.Column(db.ForeignKey('website_id'), nullable=False)

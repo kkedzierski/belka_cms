@@ -1,5 +1,6 @@
 from flask_login import current_user
 from belka.models import Website, WebsiteLink
+import enum
 
 
 def get_current_website(current_user_id):
@@ -18,3 +19,9 @@ def is_user_website_created(current_user_id):
         return False
     else:
         return True
+
+
+class UserRoles(enum.Enum):
+    admin = 1
+    editor = 2
+    author = 3
