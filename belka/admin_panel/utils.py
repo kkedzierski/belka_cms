@@ -1,12 +1,15 @@
 from flask_login import current_user
-from belka.models import Website, WebsiteLink, Page
+from belka.models import Website, WebsiteLink, Page, User
 import os
 import shutil
 import enum
+import secrets
+from PIL import Image
+from flask import current_app
 
 
-def get_current_website(current_user_id):
-    website_link = WebsiteLink.query.filter_by(user_id=current_user_id).first()
+def get_current_website(website_link_id):
+    website_link = WebsiteLink.query.filter_by(id=website_link_id).first()
     if website_link is not None:
         website = Website.query.filter_by(id=website_link.website_id).first()
         return website
@@ -19,16 +22,16 @@ def get_website_by_id(website_id):
     return website
 
 
-def get_current_website_pages(current_user_id):
-    website = get_current_website(current_user_id)
+def get_current_website_pages(website_link_id):
+    website = get_current_website(website_link_id)
     pages = Page.query.filter_by(website_id=website.id).all()
     return pages
 
 
 def is_user_website_created(current_user_id):
-    website = get_current_website(current_user_id)
-    print(website)
-    if current_user.is_authenticated and website is None:
+    user = User.query.filter_by(id=current_user_id).first()
+    print(user)
+    if current_user.is_authenticated and user.website_link_id is None:
         return False
     else:
         return True
@@ -52,8 +55,8 @@ def create_new_empty_page(dir_name, page_name):
         file.write(page_template)
 
 
-def delete_page(page_name, current_user_id):
-    website = get_current_website(current_user_id)
+def delete_page(page_name, website_link_id):
+    website = get_current_website(website_link_id)
     page_path = os.path.join(go_to_main_website_templates(),
                              website.title, page_name+".html")
     if page_path is not None:
@@ -80,7 +83,6 @@ def create_directory(dir_name, path=go_to_main_website_templates()):
 def is_directory_exist(dir_name, path=go_to_main_website_templates()):
     directory_path = os.path.join(path, dir_name)
     return True if os.path.isdir(directory_path) else False
-
 
 
 def delete_directory(dir_name, path=go_to_main_website_templates()):
@@ -117,3 +119,18 @@ def get_user_role(role):
         if role == roles.name:
             return role
     return None
+
+
+def save_picture(form_picture):
+    random_hex = secrets.token_hex(8)
+    _, f_ext = os.path.splitext(form_picture.filename)
+    picture_fn = random_hex + f_ext
+    picture_path = os.path.join(current_app.root_path, 'static/images',
+                                picture_fn)
+
+    output_size = (125, 125)
+    resized_image = Image.open(form_picture)
+    resized_image.thumbnail(output_size)
+    resized_image.save(picture_path)
+
+    return picture_fn

@@ -16,8 +16,10 @@ from belka.admin_panel.utils import (is_user_website_created,
                                      is_directory_exist,
                                      get_current_website_pages,
                                      get_user_role,
-                                     get_website_by_id)
-from belka.admin_panel.forms import CreateUserForm
+                                     get_website_by_id,
+                                     save_picture)
+from belka.admin_panel.forms import (CreateUserForm, UpdateAccountForm,
+                                     UpdateUserForm)
 
 
 main_panel = Blueprint('main_panel', __name__)
@@ -28,7 +30,7 @@ main_panel = Blueprint('main_panel', __name__)
 def getting_started():
     if current_user.user_role != 1:
         flash('You dont have access to this page', 'danger')
-        redirect(url_for('main_panel.admin_panel'))
+        return redirect(url_for('main_panel.admin_panel'))
     if is_user_website_created(current_user.id):
         flash('You cannot create another website. You have one!', 'info')
         return redirect(url_for('main_panel.admin_panel'))
@@ -39,6 +41,9 @@ def getting_started():
 @main_panel.route('/create-website', methods=['GET', 'POST'])
 @login_required
 def create_website_page():
+    if current_user.user_role != 1:
+        flash('You dont have access to this page', 'danger')
+        return redirect(url_for('main_panel.admin_panel'))
     if is_user_website_created(current_user.id):
         flash('You cannot create another website. You have one!', 'info')
         return redirect(url_for('main_panel.admin_panel'))
@@ -49,6 +54,9 @@ def create_website_page():
 @main_panel.route('/create-website/create-website', methods=['GET', 'POST'])
 @login_required
 def create_website():
+    if current_user.user_role != 1:
+        flash('You dont have access to this page', 'danger')
+        return redirect(url_for('main_panel.admin_panel'))
     if request.method == "POST":
         website_title = request.form.get('website_name')
         if not validators.domain(website_title):
@@ -56,7 +64,8 @@ def create_website():
             return redirect(url_for('main_panel.create_website_page'))
         if is_directory_exist(website_title):
             flash('Website {website_name} exist '
-                  'choose another name'.format(website_name=website_title), 'danger')
+                  'choose another name'.format(website_name=website_title),
+                  'danger')
             return redirect(url_for('main_panel.create_website_page'))
         create_directory(website_title)
         create_home_page(website_title)
@@ -66,6 +75,8 @@ def create_website():
         website_link = WebsiteLink(website_name=website_title,
                                    website_id=website.id)
         db.session.add(website_link)
+        db.session.commit()
+        current_user.website_link_id = website_link.id
         db.session.commit()
         flash('You created your website, to watch your website click button'
               ' on left menu', 'success')
@@ -95,7 +106,12 @@ def paiting_website():
 @main_panel.route('/admin-panel', methods=['GET', 'POST'])
 @login_required
 def admin_panel():
-    website = get_current_website(current_user.id)
+    website = get_current_website(current_user.website_link_id)
+    if current_user.user_role != 1:
+        role = "disabled"
+        return render_template('admin_panel/admin-panel.html',
+                               title="Admin Panel",
+                               website=website, role=role)
     if website is None:
         return redirect(url_for('main_panel.getting_started'))
     if not is_user_website_created(current_user.id):
@@ -105,14 +121,41 @@ def admin_panel():
                            website=website)
 
 
+@main_panel.route('/account', methods=['GET', 'POST'])
+@login_required
+def account():
+    form = UpdateAccountForm()
+    website = get_current_website(current_user.website_link_id)
+    if form.validate_on_submit():
+        if form.picture.data:
+            picture_file = save_picture(form.picture.data)
+            current_user.image_file = picture_file
+        current_user.username = form.username.data
+        current_user.email = form.email.data
+        db.session.commit()
+        flash('Your account has been updated!', 'success')
+        return redirect(url_for('main_panel.account'))
+    elif request.method == 'GET':
+        form.username.data = current_user.username
+        form.email.data = current_user.email
+    image_file = url_for('static',
+                         filename='images/' + current_user.image_file)
+    return render_template('admin_panel/account.html',
+                           title='Update User', form=form,
+                           website=website, image_file=image_file)
+
 #region users
 @main_panel.route('/users', methods=['GET', 'POST'])
 def users_page():
+    if current_user.user_role != 1:
+        flash('You dont have access to this page', 'danger')
+        return redirect(url_for('main_panel.admin_panel'))
     if not is_user_website_created(current_user.id):
         flash('You dont have a website. Create a website first!', 'info')
         return redirect(url_for('main_panel.getting_started'))
     form = CreateUserForm()
-    website = get_current_website(current_user.id)
+    website = get_current_website(current_user.website_link_id)
+    users = User.query.filter(User.user_role != 1).all()
     if form.validate_on_submit():
         hashed_password = bcrypt.generate_password_hash(form.password.data
                                                         ).decode('utf-8')
@@ -120,25 +163,82 @@ def users_page():
         user = User(username=form.username.data,
                     email=form.email.data,
                     password=hashed_password,
-                    user_role=user_role)
+                    user_role=user_role,
+                    website_link_id=current_user.website_link_id)
         db.session.add(user)
         db.session.commit()
         flash('Your create user: '
               '{user_name}'.format(user_name=user.username),
               'success')
         return redirect(url_for('main_panel.users_page'))
-    return render_template('admin_panel/users.html', website=website,
-                           form=form)
+    return render_template('admin_panel/users/users.html', website=website,
+                           form=form, users=users)
+
+
+@main_panel.route('/users/user/operations', methods=['GET', 'POST'])
+def user_operations():
+    if current_user.user_role != 1:
+        flash('You dont have access to this page', 'danger')
+        return redirect(url_for('main_panel.admin_panel'))
+    if not is_user_website_created(current_user.id):
+        flash('You dont have a website. Create a website first!', 'info')
+        return redirect(url_for('main_panel.getting_started'))
+    if request.form.get('user_select') is not None:
+        if request.form.get('action') == "Delete user":
+            username = request.form.get('user_select')
+            user = User.query.filter_by(username=username).first()
+            db.session.delete(user)
+            db.session.commit()
+            flash('The {user} has been deleted!'.format(user=username),
+                  'success')
+            return redirect(url_for('main_panel.users_page'))
+        if request.form.get('action') == "Change user data":
+            username = request.form.get('user_select')
+            user = User.query.filter_by(username=username).first()
+            return redirect(url_for('main_panel.change_user_data', user_id=user.id))
+    else:
+        flash('You need to select user', 'info')
+        return redirect(url_for('main_panel.users_page'))
+
+
+@main_panel.route('/users/user/<int:user_id>', methods=['GET', 'POST'])
+@login_required
+def change_user_data(user_id):
+    if current_user.user_role != 1:
+        flash('You dont have access to this page', 'danger')
+        return redirect(url_for('main_panel.admin_panel'))
+    form = UpdateUserForm()
+    users = User.query.filter(User.user_role != 1).all()
+    user = User.query.filter_by(id=user_id).first()
+    website = get_current_website(current_user.website_link_id)
+    if form.validate_on_submit():
+        user.username = form.username.data
+        user.email = form.email.data
+        user.password = form.password.data
+        db.session.commit()
+        flash('User account has been updated!', 'success')
+        return redirect(url_for('main_panel.users_page'))
+    elif request.method == 'GET':
+        form.username.data = user.username
+        form.email.data = user.email
+        form.password.data = user.password
+    return render_template('admin_panel/users/users.html',
+                           title='Update User', form=form,
+                           website=website, users=users)
+
 
 #endregion
 
 #region Navigation
 @main_panel.route('/apperance/navigation', methods=['GET', 'POST'])
 def navigation_page():
+    if current_user.user_role != 1:
+        flash('You dont have access to this page', 'danger')
+        return redirect(url_for('main_panel.admin_panel'))
     if not is_user_website_created(current_user.id):
         flash('You dont have a website. Create a website first!', 'info')
         return redirect(url_for('main_panel.getting_started'))
-    website = get_current_website(current_user.id)
+    website = get_current_website(current_user.website_link_id)
     return render_template('admin_panel/apperance/navigation.html',
                            title="Navigation bar", website=website)
 
@@ -150,7 +250,7 @@ def change_nav_font_size():
         return redirect(url_for('main_panel.getting_started'))
     if request.method == 'POST':
         navbarFont = request.form.get('navbarFontSize')
-        website = get_current_website(current_user.id)
+        website = get_current_website(current_user.website_link_id)
         website.navbar_font_size = navbarFont
         db.session.commit()
         flash('Navigation font size changed', 'success')
@@ -159,12 +259,15 @@ def change_nav_font_size():
 
 @main_panel.route('/apperance/navigation/font-family', methods=['GET', 'POST'])
 def change_nav_font_family():
+    if current_user.user_role != 1:
+        flash('You dont have access to this page', 'danger')
+        return redirect(url_for('main_panel.admin_panel'))
     if not is_user_website_created(current_user.id):
         flash('You dont have a website. Create a website first!', 'info')
         return redirect(url_for('main_panel.getting_started'))
     if request.method == 'POST':
         navbarFontFamily = request.form.get('navbarFontFamily')
-        website = get_current_website(current_user.id)
+        website = get_current_website(current_user.website_link_id)
         website.navbar_font_style = navbarFontFamily
         db.session.commit()
         flash('Navigation font family changed', 'success')
@@ -173,6 +276,9 @@ def change_nav_font_family():
 
 @main_panel.route('/apperance/navigation/styles', methods=['POST'])
 def change_navigation():
+    if current_user.user_role != 1:
+        flash('You dont have access to this page', 'danger')
+        return redirect(url_for('main_panel.admin_panel'))
     if not is_user_website_created(current_user.id):
         flash('You dont have a website. Create a website first!', 'info')
         return redirect(url_for('main_panel.getting_started'))
@@ -183,7 +289,7 @@ def change_navigation():
             nav_style = "navbar-dark bg-dark"
         if request.form.get('nav_style') == 'blue':
             nav_style = "navbar-dark bg-info"
-        website = get_current_website(current_user.id)
+        website = get_current_website(current_user.website_link_id)
         website.nav_style = nav_style
         db.session.commit()
         flash('Navigation bar changed', 'success')
@@ -193,29 +299,38 @@ def change_navigation():
 #region Content
 @main_panel.route('/apperance/content/content', methods=['GET', 'POST'])
 def content_page():
+    if current_user.user_role != 1:
+        flash('You dont have access to this page', 'danger')
+        return redirect(url_for('main_panel.admin_panel'))
     if not is_user_website_created(current_user.id):
         flash('You dont have a website. Create a website first!', 'info')
         return redirect(url_for('main_panel.getting_started'))
-    website = get_current_website(current_user.id)
+    website = get_current_website(current_user.website_link_id)
     return render_template('admin_panel/apperance/content/content.html',
                            title="Content", website=website)
 
 
 @main_panel.route('/apperance/content/font-size', methods=['GET', 'POST'])
 def font_size_page():
-    website = get_current_website(current_user.id)
+    if current_user.user_role != 1:
+        flash('You dont have access to this page', 'danger')
+        return redirect(url_for('main_panel.admin_panel'))
+    website = get_current_website(current_user.website_link_id)
     return render_template('admin_panel/apperance/content/font-size.html',
                            title="Font size", website=website)
 
 
 @main_panel.route('/apperance/content/font-size', methods=['GET', 'POST'])
 def change_font_size():
+    if current_user.user_role != 1:
+        flash('You dont have access to this page', 'danger')
+        return redirect(url_for('main_panel.admin_panel'))
     if not is_user_website_created(current_user.id):
         flash('You dont have a website. Create a website first!', 'info')
         return redirect(url_for('main_panel.getting_started'))
     if request.method == 'POST':
         navbarFont = request.form.get('navbarFontSize')
-        website = get_current_website(current_user.id)
+        website = get_current_website(current_user.website_link_id)
         website.navbar_font_size = navbarFont
         db.session.commit()
         flash('Navigation font size changed', 'success')
@@ -224,19 +339,28 @@ def change_font_size():
 
 @main_panel.route('/apperance/content/font-style', methods=['GET', 'POST'])
 def font_style_page():
-    website = get_current_website(current_user.id)
+    if current_user.user_role != 1:
+        flash('You dont have access to this page', 'danger')
+        return redirect(url_for('main_panel.admin_panel'))
+    website = get_current_website(current_user.website_link_id)
     return render_template('admin_panel/apperance/content/font-style.html',
                            title="Font style", website=website)
 
 
 @main_panel.route('/apperance/content/background-style', methods=['GET', 'POST'])
 def background_page():
-    website = get_current_website(current_user.id)
+    if current_user.user_role != 1:
+        flash('You dont have access to this page', 'danger')
+        return redirect(url_for('main_panel.admin_panel'))
+    website = get_current_website(current_user.website_link_id)
     return render_template('admin_panel/apperance/content/background-style.html',
                            title="Background style", website=website)
 
 @main_panel.route('/apperance/content/background/style', methods=['GET', 'POST'])
 def background_style():
+    if current_user.user_role != 1:
+        flash('You dont have access to this page', 'danger')
+        return redirect(url_for('main_panel.admin_panel'))
     if not is_user_website_created(current_user.id):
         flash('You dont have a website. Create a website first!', 'info')
         return redirect(url_for('main_panel.getting_started'))
@@ -249,7 +373,7 @@ def background_style():
             backround_style = "painting.png"
         if request.form.get('backround_style') == 'flower':
             backround_style = "flower.png"
-        website = get_current_website(current_user.id)
+        website = get_current_website(current_user.website_link_id)
         website.page_background = backround_style
         db.session.commit()
         flash('Background changed', 'success')
@@ -259,44 +383,53 @@ def background_style():
 #region Pages
 @main_panel.route('/pages', methods=['GET', 'POST'])
 def pages():
+    if current_user.user_role != 1:
+        flash('You dont have access to this page', 'danger')
+        return redirect(url_for('main_panel.admin_panel'))
     if not is_user_website_created(current_user.id):
         flash('You dont have a website. Create a website first!', 'info')
         return redirect(url_for('main_panel.getting_started'))
-    pages = get_current_website_pages(current_user.id)
-    website = get_current_website(current_user.id)
+    pages = get_current_website_pages(current_user.website_link_id)
+    website = get_current_website(current_user.website_link_id)
     return render_template('admin_panel/pages/pages.html', title="pages",
                            website=website, pages=pages)
 
 
 @main_panel.route('/pages/create-new-page', methods=['GET', 'POST'])
 def create_new_page():
+    if current_user.user_role != 1:
+        flash('You dont have access to this page', 'danger')
+        return redirect(url_for('main_panel.admin_panel'))
     if not is_user_website_created(current_user.id):
         flash('You dont have a website. Create a website first!', 'info')
         return redirect(url_for('main_panel.getting_started'))
     if request.method == 'POST':
         title_page = request.form.get('page_name')
-        website = get_current_website(current_user.id)
+        website = get_current_website(current_user.website_link_id)
         create_new_empty_page(website.title, title_page)
         page = Page(title_page=title_page, website_id=website.id)
         db.session.add(page)
         db.session.commit()
         flash('You created new page!', 'success')
-    pages = get_current_website_pages(current_user.id)
-    website = get_current_website(current_user.id)
+    pages = get_current_website_pages(current_user.website_link_id)
+    website = get_current_website(current_user.website_link_id)
     return render_template('admin_panel/pages/pages.html',
                            pages=pages, website=website)
 
 
 @main_panel.route('/pages/page/operations', methods=['GET', 'POST'])
 def page_operations():
+    if current_user.user_role != 1:
+        flash('You dont have access to this page', 'danger')
+        return redirect(url_for('main_panel.admin_panel'))
     if not is_user_website_created(current_user.id):
         flash('You dont have a website. Create a website first!', 'info')
         return redirect(url_for('main_panel.getting_started'))
     if request.form.get('page_select') is not None:
-        website = get_current_website(current_user.id)
+        website = get_current_website(current_user.website_link_id)
         if request.form.get('action') == "Delete page":
             title = request.form.get('page_select')
-            delete_page(title, current_user.id)
+            delete_page(title, current_user.website_link_id)
             page = Page.query.filter_by(title_page=title,
                                         website_id=website.id).first()
             db.session.delete(page)
@@ -315,11 +448,14 @@ def page_operations():
 
 @main_panel.route('/pages/page/change-page-name', methods=['GET', 'POST'])
 def change_page_name():
+    if current_user.user_role != 1:
+        flash('You dont have access to this page', 'danger')
+        return redirect(url_for('main_panel.admin_panel'))
     if not is_user_website_created(current_user.id):
         flash('You dont have a website. Create a website first!', 'info')
         return redirect(url_for('main_panel.getting_started'))
     title = request.form.get('page_name')
-    website = get_current_website(current_user.id)
+    website = get_current_website(current_user.website_link_id)
     page = Page.query.filter_by(title_page=title,
                                 website_id=website.id).first()
     page.title_page = request.form.get('new_page_name')
@@ -335,22 +471,26 @@ def change_page_name():
 # region Settings
 @main_panel.route('/settings')
 def settings_page():
-    user = User.query.filter_by(username="test").first()
-    print(user.websitelink)
+    if current_user.user_role != 1:
+        flash('You dont have access to this page', 'danger')
+        return redirect(url_for('main_panel.admin_panel'))
     if not is_user_website_created(current_user.id):
         flash('You dont have a website. Create a website first!', 'info')
         return redirect(url_for('main_panel.getting_started'))
-    website = get_current_website(current_user.id)
-    return render_template('admin_panel/settings.html',
+    website = get_current_website(current_user.website_link_id)
+    return render_template('admin_panel/settings/settings.html',
                            title="settings", website=website)
 
 
 @main_panel.route('/settings/delete-website', methods=['GET', 'POST'])
 def delete_website():
+    if current_user.user_role != 1:
+        flash('You dont have access to this page', 'danger')
+        return redirect(url_for('main_panel.admin_panel'))
     if not is_user_website_created(current_user.id):
         flash('You dont have a website. Create a website first!', 'info')
         return redirect(url_for('main_panel.getting_started'))
-    website = get_current_website(current_user.id)
+    website = get_current_website(current_user.website_link_id)
     website_link = WebsiteLink.query.filter_by(website_id=website.id).first()
     WebsiteLink.query.filter(WebsiteLink.id == website_link.id).delete()
     delete_directory(website.title)
@@ -364,21 +504,27 @@ def delete_website():
 
 @main_panel.route('/settings/change-website-name', methods=['GET', 'POST'])
 def change_website_name_page():
+    if current_user.user_role != 1:
+        flash('You dont have access to this page', 'danger')
+        return redirect(url_for('main_panel.admin_panel'))
     if not is_user_website_created(current_user.id):
         flash('You dont have a website. Create a website first!', 'info')
         return redirect(url_for('main_panel.getting_started'))
-    website = get_current_website(current_user.id)
-    return render_template('admin_panel/change-website-name.html',
+    website = get_current_website(current_user.website_link_id)
+    return render_template('admin_panel/settings/change-website-name.html',
                            title="Change website name",
                            website=website)
 
 
 @main_panel.route('/settings/change/name', methods=['GET', 'POST'])
 def change_website_name():
+    if current_user.user_role != 1:
+        flash('You dont have access to this page', 'danger')
+        return redirect(url_for('main_panel.admin_panel'))
     if not is_user_website_created(current_user.id):
         flash('You dont have a website. Create a website first!', 'info')
         return redirect(url_for('main_panel.getting_started'))
-    website = get_current_website(current_user.id)
+    website = get_current_website(current_user.website_link_id)
     new_website_name = request.form.get('website_name')
     if not validators.domain(new_website_name):
         flash('Create correct domain adress like: example.com', 'info')
@@ -393,10 +539,13 @@ def change_website_name():
 
 @main_panel.route('/settings/show-admin-panel', methods=['GET', 'POST'])
 def show_admin_panel():
+    if current_user.user_role != 1:
+        flash('You dont have access to this page', 'danger')
+        return redirect(url_for('main_panel.admin_panel'))
     if not is_user_website_created(current_user.id):
         flash('You dont have a website. Create a website first!', 'info')
         return redirect(url_for('main_panel.getting_started'))
-    website = get_current_website(current_user.id)
+    website = get_current_website(current_user.website_link_id)
     if request.form.get('admin_panel_view'):
         flash('Admin panel turn on', 'success')
         website.show_admin_panel = True

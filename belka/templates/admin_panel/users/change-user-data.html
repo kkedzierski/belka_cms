@@ -1,8 +1,8 @@
 {% extends 'admin_panel/layout.html' %}
 {% block content %}
-<div class="col-lg-5 mt-4 text-center">
-    <div class="belka_block mt-4 mb-6">
-        <legend class="text-center">Create User</legend>
+<div class="row">
+<div class="col-lg-4 belka_block mr-2 mt-4 text-center">
+        <h3 class="text-center">Create User</h3>
         <form method="POST" action="">
             {{ form.hidden_tag() }}
             <!-- Login -->
@@ -68,6 +68,17 @@
             {% endif %}
             {{ form.submit(class="btn btn-outline-info") }}    
         </form>
-    </div>
+</div>
+<div class="col-lg-4 belka_block text-center mt-4">
+    <h3>Users</h3>
+<form action="{{ url_for('main_panel.user_operations')}}" method="POST">
+    <select name="user_select" class="form-control">
+        {% for user in users %}
+        <option name="user_select" value="{{ user.username }}">{{ user.username }}</option>      
+        {% endfor %} 
+    </select>   
+    <input class="mt-4 btn btn-info btn-block" name="action" type="submit" value="Change user data">
+    <input class="btn mt-2 btn-danger btn-block" name="action" type="submit" value="Delete user">    
+</form>
 </div>
 {% endblock content %}

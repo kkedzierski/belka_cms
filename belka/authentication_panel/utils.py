@@ -1,10 +1,10 @@
 from flask_login import current_user
-from belka.models import Website, WebsiteLink
+from belka.models import Website, WebsiteLink, User
 import enum
 
 
-def get_current_website(current_user_id):
-    website_link = WebsiteLink.query.filter_by(user_id=current_user_id).first()
+def get_current_website(website_link_id):
+    website_link = WebsiteLink.query.filter_by(id=website_link_id).first()
     if website_link is not None:
         website = Website.query.filter_by(id=website_link.website_id).first()
         return website
@@ -13,9 +13,9 @@ def get_current_website(current_user_id):
 
 
 def is_user_website_created(current_user_id):
-    website = get_current_website(current_user_id)
-    print(website)
-    if current_user.is_authenticated and website is None:
+    user = User.query.filter_by(id=current_user_id).first()
+    print(user)
+    if current_user.is_authenticated and user.website_link_id is None:
         return False
     else:
         return True

@@ -9,6 +9,7 @@ db = SQLAlchemy()
 bcrypt = Bcrypt()
 migrate = Migrate(compare_type=True)
 
+
 login_manager = LoginManager()
 login_manager.login_view = 'authentication.login'
 login_manager.login_message_category = 'info'

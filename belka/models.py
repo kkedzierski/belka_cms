@@ -16,8 +16,8 @@ class User(db.Model, UserMixin):
                            default='default.jpg')
     password = db.Column(db.String(60), nullable=False)
     user_role = db.Column(db.Integer)
-    websiteLink_id = db.Column(db.ForeignKey('websitelink.id'),
-                               nullable=True)
+    website_link_id = db.Column(db.ForeignKey('website_link.id'),
+                                nullable=True)
     posts = db.relationship('Post', backref='author', lazy=True)
 
     def __repr__(self):
@@ -47,7 +47,7 @@ class WebsiteLink(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     website_name = db.Column(db.String, nullable=False)
     website_id = db.Column(db.ForeignKey('website.id'), nullable=False)
-    users = db.relationship('User', backref='author', lazy=True)
+    # user = db.relationship("User")
 
     def __repr__(self):
         return "WebsiteLink({website_name},"\
