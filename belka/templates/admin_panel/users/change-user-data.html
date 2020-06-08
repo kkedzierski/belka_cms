@@ -1,0 +1,84 @@
+{% extends 'admin_panel/layout.html' %}
+{% block content %}
+<div class="row">
+<div class="col-lg-4 belka_block mr-2 mt-4 text-center">
+        <h3 class="text-center">Create User</h3>
+        <form method="POST" action="">
+            {{ form.hidden_tag() }}
+            <!-- Login -->
+            {% if form.username.errors %}
+                {{ form.username(class="form-control is-invalid") }}
+                <div class="invalid-feedback">
+                    {% for error in form.username.errors %}
+                        <span>{{ error }}</span>
+                    {% endfor %}
+                </div>
+            {% else %}
+                {{ form.username(class="form-control mb-2") }}
+            {% endif %}
+            <!-- Email -->
+            {% if form.email.errors %}
+                {{ form.email(class="form-control is-invalid") }}
+                <div class="invalid-feedback">
+                    {% for error in form.email.errors %}
+                        <span>{{ error }}</span>
+
+                    {% endfor %}
+                </div>
+            {% else %}
+                {{ form.email(class="form-control mb-2") }}
+            {% endif %}
+            <!-- Password -->
+            {% if form.password.errors %}
+            {{ form.password(class="form-control is-invalid") }}
+                <div class="invalid-feedback">
+                    {% for error in form.password.errors %}
+                        <span>{{ error }}</span>
+
+                    {% endfor %}
+                </div>
+            {% else %}
+                {{ form.password(class="form-control mb-2") }}
+            {% endif %}
+            <!-- Confirm password -->
+            {% if form.confirm_password.errors %}
+            {{ form.confirm_password(class="form-control is-invalid") }}
+                <div class="invalid-feedback">
+                    {% for error in form.confirm_password.errors %}
+                        <span>{{ error }}</span>
+
+                    {% endfor %}
+                </div>
+            {% else %}
+                {{ form.confirm_password(class="form-control mb-2") }}
+            {% endif %}
+            <!-- Choose role -->
+            
+            {% if form.user_role.errors %}
+            <div class="form-check form-check-inline">
+            {{ form.user_role(class="form-check-input is-invalid list-unstyled") }}
+                <div class="invalid-feedback">
+                        You must choose role for user!
+                </div>
+            </div>
+            {% else %}
+            <div class="form-check form-check-inline">
+                {{ form.user_role(class="p-2 mr-4 form-check-input is-invalid list-unstyled") }}
+            </div>
+            {% endif %}
+            {{ form.submit(class="btn btn-outline-info") }}    
+        </form>
+</div>
+<div class="col-lg-4 belka_block text-center mt-4">
+    <h3>Users</h3>
+<form action="{{ url_for('main_panel.user_operations')}}" method="POST">
+    <select name="user_select" class="form-control">
+        {% for user in users %}
+        <option name="user_select" value="{{ user.username }}">{{ user.username }}</option>      
+        {% endfor %} 
+    </select>   
+    <input class="mt-4 btn btn-info btn-block" name="action" type="submit" value="Change user data">
+    <input class="btn mt-2 btn-danger btn-block" name="action" type="submit" value="Delete user">    
+</form>
+</div>
+{% endblock content %}

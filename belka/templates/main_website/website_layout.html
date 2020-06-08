@@ -1,6 +1,5 @@
 <!DOCTYPE html>
 <html lang="en">
-{% for website in website %}
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -18,7 +17,7 @@
           background-image: url("/static/images/{{ website.page_background }}");
        }
        .nav-link{
-        font-family: '{{website.navbar_font_style}}';
+        font-family: '{{ website.navbar_font_style }}';
        }    
        .nav-link{
         font-size: {{ website.navbar_font_size }}px;
@@ -34,7 +33,7 @@
 </nav>
 {% endif %}
 <nav class="navbar navbar-expand-lg {{ website.nav_style }}">
-    <a class="navbar-brand" href="{{ url_for('website.index') }}">{{ website.title }}</a>
+    <a class="navbar-brand" href="{{ url_for('website.index', website_name=website.title) }}">{{ website.title }}</a>
     <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNavDropdown" aria-controls="navbarNavDropdown" aria-expanded="false" aria-label="Toggle navigation">
       <span class="navbar-toggler-icon"></span>
     </button>
@@ -42,7 +41,7 @@
       <ul class="navbar-nav">
       {% for page in pages %}
         <li class="nav-item">
-          <a class="nav-link" href="{{ url_for('main_panel.go_to_page', page_name=page.title_page) }}">{{ page.title_page }}</a>
+          <a class="nav-link" href="{{ url_for('website.go_to_page', page_name=page.title_page, website_name=website.title) }}">{{ page.title_page }}</a>
         </li>
       {% endfor %}
       </ul>
@@ -81,5 +80,4 @@
   <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js" integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6" crossorigin="anonymous"></script>
 
 </body>
-{% endfor %}
 </html>
