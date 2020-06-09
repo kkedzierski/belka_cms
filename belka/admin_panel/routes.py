@@ -2,7 +2,8 @@ from flask import (redirect, render_template, url_for,
                    Blueprint, flash, request, g, abort)
 import validators
 from flask_login import login_required, current_user
-from belka.models import Website, Page, WebsiteLink, User
+from belka.models import (Website, Page, WebsiteLink, User,
+                          Post)
 from belka import db, bcrypt
 from belka.admin_panel.utils import (is_user_website_created,
                                      create_new_empty_page,
@@ -17,9 +18,10 @@ from belka.admin_panel.utils import (is_user_website_created,
                                      get_current_website_pages,
                                      get_user_role,
                                      get_website_by_id,
-                                     save_picture)
+                                     save_picture,
+                                     UserRoles)
 from belka.admin_panel.forms import (CreateUserForm, UpdateAccountForm,
-                                     UpdateUserForm)
+                                     UpdateUserForm, PostForm)
 
 
 main_panel = Blueprint('main_panel', __name__)
@@ -195,7 +197,8 @@ def user_operations():
         if request.form.get('action') == "Change user data":
             username = request.form.get('user_select')
             user = User.query.filter_by(username=username).first()
-            return redirect(url_for('main_panel.change_user_data', user_id=user.id))
+            return redirect(url_for('main_panel.change_user_data',
+                                    user_id=user.id))
     else:
         flash('You need to select user', 'info')
         return redirect(url_for('main_panel.users_page'))
@@ -291,6 +294,7 @@ def change_navigation():
             nav_style = "navbar-dark bg-info"
         website = get_current_website(current_user.website_link_id)
         website.nav_style = nav_style
+        website.footer_style = nav_style
         db.session.commit()
         flash('Navigation bar changed', 'success')
         return redirect(url_for('website.index', website_name=website.title))
@@ -310,7 +314,7 @@ def content_page():
                            title="Content", website=website)
 
 
-@main_panel.route('/apperance/content/font-size', methods=['GET', 'POST'])
+@main_panel.route('/apperance/content/font-size-page', methods=['GET', 'POST'])
 def font_size_page():
     if current_user.user_role != 1:
         flash('You dont have access to this page', 'danger')
@@ -329,12 +333,15 @@ def change_font_size():
         flash('You dont have a website. Create a website first!', 'info')
         return redirect(url_for('main_panel.getting_started'))
     if request.method == 'POST':
-        navbarFont = request.form.get('navbarFontSize')
         website = get_current_website(current_user.website_link_id)
-        website.navbar_font_size = navbarFont
+        title_post_font = request.form.get('titlePostFont')
+        website.title_post_font_size = title_post_font
         db.session.commit()
-        flash('Navigation font size changed', 'success')
-        return redirect(url_for('website.index'))
+        post_text_font = request.form.get('PostTextFont')
+        website.post_text_font_size = post_text_font
+        db.session.commit()
+        flash('Post font size changed', 'success')
+        return redirect(url_for('website.index', website_name=website.title))
 
 
 @main_panel.route('/apperance/content/font-style', methods=['GET', 'POST'])
@@ -345,6 +352,22 @@ def font_style_page():
     website = get_current_website(current_user.website_link_id)
     return render_template('admin_panel/apperance/content/font-style.html',
                            title="Font style", website=website)
+
+
+@main_panel.route('/apperande/content/change-post-font-style',
+                  methods=['GET', 'POST'])
+def change_post_font_style():
+    if current_user.user_role != 1:
+        flash('You dont have access to this page', 'danger')
+        return redirect(url_for('main_panel.admin_panel'))
+    if request.method == 'POST':
+        post_font_family = request.form.get('PostFontFamily')
+        website = get_current_website(current_user.website_link_id)
+        website.post_text_font_style = post_font_family
+        website.title_post_font_style = post_font_family
+        db.session.commit()
+        flash('Post font family changed', 'success')
+        return redirect(url_for('website.index', website_name=website.title))
 
 
 @main_panel.route('/apperance/content/background-style', methods=['GET', 'POST'])
@@ -468,6 +491,82 @@ def change_page_name():
 
 #endregion
 
+#region Posts
+@main_panel.route('/posts', methods=['GET', 'POST'])
+def posts():
+    form = PostForm()
+    if current_user.user_role != 1:
+        role = "disabled"
+    else:
+        role = ""
+    if current_user.user_role == "author":
+        posts = Post.query.filter_by(user_id=current_user.id).all()
+    else:
+        posts = Post.query.all()
+    pages = get_current_website_pages(current_user.website_link_id)
+    website = get_current_website(current_user.website_link_id)
+    website_link = WebsiteLink.query.filter_by(website_id=website.id).first()
+    if form.validate_on_submit():
+        if request.form.get('page_select') is not None:
+            website = get_current_website(current_user.website_link_id)
+            title_page = request.form.get('page_select')
+            post = Post(title=form.title.data, content=form.content.data,
+                        author=current_user, post_page=title_page,
+                        user_id=current_user.id,
+                        website_link_id=website_link.id)
+            db.session.add(post)
+            db.session.commit()
+            flash('Your post has been created!', 'success')
+            return redirect(url_for('website.index',
+                            website_name=website.title))
+    return render_template('admin_panel/posts/posts.html',
+                           title="Posts", website=website,
+                           pages=pages, form=form,
+                           posts=posts, role=role)
+
+
+@main_panel.route('/posts/post-operations', methods=['GET', 'POST'])
+@login_required
+def post_operations():
+    if request.method == 'POST':
+        if request.form.get('post_select') is not None:
+            if request.form.get('action') == "Delete post":
+                post_title = request.form.get('post_select')
+                post = Post.query.filter_by(title=post_title).first()
+                db.session.delete(post)
+                db.session.commit()
+                flash('The {post} has been deleted!'.format(post=post_title),
+                      'success')
+                return redirect(url_for('main_panel.posts'))
+            if request.form.get('action') == "Update post":
+                post_title = request.form.get('post_select')
+                post = Post.query.filter_by(title=post_title).first()
+                return redirect(url_for('main_panel.update_post',
+                                        post_id=post.id))
+        else:
+            flash('You need to select post', 'info')
+            return redirect(url_for('main_panel.posts'))
+
+@main_panel.route('/posts/post/<int:post_id>', methods=['GET', 'POST'])
+@login_required
+def update_post(post_id):
+    form = PostForm()
+    post = Post.query.filter_by(id=post_id).first()
+    website = get_current_website(current_user.website_link_id)
+    if form.validate_on_submit():
+        post.title = form.title.data
+        post.content = form.content.data
+        db.session.commit()
+        flash('Post has been updated!', 'success')
+        return redirect(url_for('main_panel.posts'))
+    elif request.method == 'GET':
+        form.title.data = post.title
+        form.content.data = post.content
+    return render_template('admin_panel/posts/posts.html',
+                           title='Update Post', form=form,
+                           website=website)
+#endregion
+
 # region Settings
 @main_panel.route('/settings')
 def settings_page():
@@ -496,7 +595,8 @@ def delete_website():
     delete_directory(website.title)
     Website.query.filter(Website.id == website.id).delete()
     Page.query.filter(Page.website_id == website.id).delete()
-    User.query.filter(User.website_id == website.id).delete()
+    User.query.filter(User.website_link_id == website_link.id).delete()
+    Post.query.filter(Post.website_link_id == website_link.id).delete()
     db.session.commit()
     flash('Website has been deleted', 'info')
     return redirect(url_for('main_panel.getting_started'))

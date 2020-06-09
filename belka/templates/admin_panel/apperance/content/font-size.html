@@ -5,7 +5,7 @@
 <div class="row">
     <div class="col belka_block mt-4">
         <h3>Title Post Size:</h3>
-        <form action="" method="POST">
+        <form action="{{ url_for('main_panel.change_font_size') }}" method="POST">
             <div class="slidecontainer">
                 <input type="range" min="10" max="40" name="titlePostFont" value="16" class="slider" id="titlePostSliderID">
             </div>
@@ -14,7 +14,7 @@
             <div class="line"></div>
         <h3>Post text Size:</h3>
             <div class="float-left slidecontainer">
-                <input type="range" min="10" max="40" value="16" name="titlePostFont" class="slider" id="postTextSliderID">
+                <input type="range" min="10" max="40" value="16" name="PostTextFont" class="slider" id="postTextSliderID">
             </div>
             <p>Value: <span id="postTextOutputID"></span></p>
             <div id="PostID">Post text</div>

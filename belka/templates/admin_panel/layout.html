@@ -29,7 +29,7 @@
             </ul>
             <ul class="list-unstyled components">
                 <li>
-                    <a class="{{ role }}" href="{{ url_for('main_panel.admin_panel') }}">Main Panel</a>
+                    <a href="{{ url_for('main_panel.admin_panel') }}">Main Panel</a>
                 </li>
                 <li>
                     <a class="{{ role }}" href="{{ url_for('main_panel.users_page') }}">Users</a>
@@ -43,16 +43,13 @@
                         <li>
                             <a href="{{ url_for('main_panel.content_page')}}">Content</a>
                         </li>
-                        <li>
-                            <a href="#">Footer</a>
-                        </li>
                     </ul>
                 </li>
                 <li>
                     <a class="{{ role }}" href="{{ url_for('main_panel.pages') }}">Pages</a>
                 </li>
                 <li>
-                    <a class=" " href="{{ url_for('main_panel.pages') }}">Posts</a>
+                    <a class=" " href="{{ url_for('main_panel.posts') }}">Posts</a>
                 </li>
                 <li>
                     <a class="{{ role }}" href="{{ url_for('main_panel.settings_page') }}">Settings</a>

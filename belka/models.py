@@ -35,6 +35,8 @@ class Post(db.Model):
                             default=datetime.utcnow)
     content = db.Column(db.Text, nullable=False)
     post_page = db.Column(db.String, nullable=True)
+    website_link_id = db.Column(db.ForeignKey('website_link.id'),
+                                nullable=False)
     user_id = db.Column(db.ForeignKey('user.id'), nullable=False)
 
     def __repr__(self):

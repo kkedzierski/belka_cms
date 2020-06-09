@@ -46,7 +46,19 @@ def go_to_main_website_templates():
 
 def create_new_empty_page(dir_name, page_name):
     page_template = """{% extends 'main_website/website_layout.html' %}
-{% block content %}{% endblock content %}"""
+{% block content %}{% for post in posts %}
+<article class="media content-section">
+  <img class="rounded-circle article-img" src="{{ url_for('static', filename='images/' + post.author.image_file) }}">
+  <div class="media-body">
+    <div class="article-metadata">
+      <a>{{ post.author.username }}</a>
+      <small class="text-muted">{{ post.date_posted.strftime('%Y-%m-%d') }}</small>
+    </div>
+    <h2 class="post-title">{{ post.title }}</h2>
+    <p class="post-content article-content">{{ post.content }}</p>
+  </div>
+</article>
+{% endfor %}{% endblock content %}"""
     go_to_main_website_templates()
     path_to_save_page = os.path.join(go_to_main_website_templates(),
                                      dir_name)
@@ -99,7 +111,19 @@ def change_directory_name(dir_name, new_dir_name,
 
 def create_home_page(dir_name):
     page_template = """{% extends 'main_website/website_layout.html' %}
-{% block content %}{% endblock content %}"""
+{% block content %}{% for post in posts %}
+<article class="media content-section">
+  <img class="rounded-circle article-img" src="{{ url_for('static', filename='images/' + post.author.image_file) }}">
+  <div class="media-body">
+    <div class="article-metadata">
+      <a>{{ post.author.username }}</a>
+      <small class="text-muted">{{ post.date_posted.strftime('%Y-%m-%d') }}</small>
+    </div>
+    <h2>{{ post.title }}</h2>
+    <p class="article-content">{{ post.content }}</p>
+  </div>
+</article>
+{% endfor %}{% endblock content %}"""
     go_to_main_website_templates()
     path_to_save_page = os.path.join(go_to_main_website_templates(),
                                      dir_name)
