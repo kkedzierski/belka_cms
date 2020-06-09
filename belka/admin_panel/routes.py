@@ -1,5 +1,5 @@
 from flask import (redirect, render_template, url_for,
-                   Blueprint, flash, request, g, abort)
+                   Blueprint, flash, request)
 import validators
 from flask_login import login_required, current_user
 from belka.models import (Website, Page, WebsiteLink, User,
@@ -17,9 +17,7 @@ from belka.admin_panel.utils import (is_user_website_created,
                                      is_directory_exist,
                                      get_current_website_pages,
                                      get_user_role,
-                                     get_website_by_id,
-                                     save_picture,
-                                     UserRoles)
+                                     save_picture)
 from belka.admin_panel.forms import (CreateUserForm, UpdateAccountForm,
                                      UpdateUserForm, PostForm)
 
@@ -105,6 +103,7 @@ def paiting_website():
                            title="Paintng style")
 # endregion
 
+
 @main_panel.route('/admin-panel', methods=['GET', 'POST'])
 @login_required
 def admin_panel():
@@ -146,7 +145,7 @@ def account():
                            title='Update User', form=form,
                            website=website, image_file=image_file)
 
-#region users
+# region users
 @main_panel.route('/users', methods=['GET', 'POST'])
 def users_page():
     if current_user.user_role != 1:
@@ -230,9 +229,9 @@ def change_user_data(user_id):
                            website=website, users=users)
 
 
-#endregion
+# endregion
 
-#region Navigation
+# region Navigation
 @main_panel.route('/apperance/navigation', methods=['GET', 'POST'])
 def navigation_page():
     if current_user.user_role != 1:
@@ -300,7 +299,7 @@ def change_navigation():
         return redirect(url_for('website.index', website_name=website.title))
 # endregion
 
-#region Content
+# region Content
 @main_panel.route('/apperance/content/content', methods=['GET', 'POST'])
 def content_page():
     if current_user.user_role != 1:
@@ -370,16 +369,20 @@ def change_post_font_style():
         return redirect(url_for('website.index', website_name=website.title))
 
 
-@main_panel.route('/apperance/content/background-style', methods=['GET', 'POST'])
+@main_panel.route('/apperance/content/background-style',
+                  methods=['GET', 'POST'])
 def background_page():
     if current_user.user_role != 1:
         flash('You dont have access to this page', 'danger')
         return redirect(url_for('main_panel.admin_panel'))
     website = get_current_website(current_user.website_link_id)
-    return render_template('admin_panel/apperance/content/background-style.html',
+    return render_template('admin_panel/apperance/content/'
+                           'background-style.html',
                            title="Background style", website=website)
 
-@main_panel.route('/apperance/content/background/style', methods=['GET', 'POST'])
+
+@main_panel.route('/apperance/content/background/style',
+                  methods=['GET', 'POST'])
 def background_style():
     if current_user.user_role != 1:
         flash('You dont have access to this page', 'danger')
@@ -403,7 +406,7 @@ def background_style():
         return redirect(url_for('website.index', website_name=website.title))
 # endregion
 
-#region Pages
+# region Pages
 @main_panel.route('/pages', methods=['GET', 'POST'])
 def pages():
     if current_user.user_role != 1:
@@ -489,9 +492,9 @@ def change_page_name():
           'success')
     return redirect(url_for('main_panel.pages'))
 
-#endregion
+# endregion
 
-#region Posts
+# region Posts
 @main_panel.route('/posts', methods=['GET', 'POST'])
 def posts():
     form = PostForm()
@@ -547,6 +550,7 @@ def post_operations():
             flash('You need to select post', 'info')
             return redirect(url_for('main_panel.posts'))
 
+
 @main_panel.route('/posts/post/<int:post_id>', methods=['GET', 'POST'])
 @login_required
 def update_post(post_id):
@@ -565,7 +569,7 @@ def update_post(post_id):
     return render_template('admin_panel/posts/posts.html',
                            title='Update Post', form=form,
                            website=website)
-#endregion
+# endregion
 
 # region Settings
 @main_panel.route('/settings')
