@@ -18,9 +18,15 @@
        }
        .nav-link{
         font-family: '{{ website.navbar_font_style }}';
-       }    
-       .nav-link{
         font-size: {{ website.navbar_font_size }}px;
+       }    
+       .post-title{
+        font-family: '{{ website.title_post_font_style }}';
+        font-size: {{ website.title_post_font_size }}px;
+       }
+       .post-content{
+        font-family: '{{ website.navbar_font_style }}';
+        font-size: {{ website.post_text_font_size }}px;
        }
      </style>
      <script src="https://use.fontawesome.com/7f3c0aa4e3.js"></script>
@@ -63,10 +69,11 @@
           {% endwith %}
       </div>
   </div>
-  {% block content %}{% endblock %}
+  {% block content %}
+  {% endblock %}
 
 <!-- Footer -->
-<footer id="sticky-footer" class="page-footer navbar-dark bg-success font-small ">
+<footer class="page-footer fixed-bottom {{ website.footer_style }}">
 
     <!-- Copyright -->
     <div class="footer-copyright text-center text-white py-3">© 2020 Copyright: Belka CMS

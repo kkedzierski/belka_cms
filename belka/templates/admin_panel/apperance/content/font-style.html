@@ -3,62 +3,19 @@
 <h1>Font Style</h1>
 <p>Choose font style for your website</p>
 <div class="row">
-<div class="row mt-4">
-<div class="col belka_block ">
-    <legend>Title Post</legend>
-    <form class="float-left mt-2 mr-2" action="" method="POST">
-        <input type="hidden" name="backround_style" value="hotel">
-        <input class="btn btn-info btn-lg" style="font-family: Arial; font-size: xx-large;" value="Arial" type="submit">
-    </form>
-    <form class="float-left mt-2 mr-2" action="" method="POST">
-        <input type="hidden" name="backround_style" value="hotel">
-        <input class="btn btn-info btn-lg" style="font-family: Impact; font-size: xx-large;" value="Impact" type="submit">
-    </form>
-    <form class="float-left mt-2 mr-2" action="" method="POST">
-        <input type="hidden" name="backround_style" value="hotel">
-        <input class="btn btn-info btn-lg" style="font-family: Candara; font-size: xx-large;" value="Candara" type="submit">
-    </form>
-    <form class="float-left mt-2 mr-2" action="" method="POST">
-        <input type="hidden" name="backround_style" value="hotel">
-        <input class="btn btn-info btn-lg" style="font-family: Comic; font-size: xx-large;" value="Comic" type="submit">
-    </form>
-    <form class="float-left mt-2 mr-2" action="" method="POST">
-        <input type="hidden" name="backround_style" value="hotel">
-        <input class="btn btn-info btn-lg" style="font-family: Verdana; font-size: xx-large;" value="Verdana" type="submit">
-    </form>
-    <form class="float-left mt-2 mr-2" action="" method="POST">
-        <input type="hidden" name="backround_style" value="hotel">
-        <input class="btn btn-info btn-lg" style="font-family: 'Times New Roman', Times, serif; font-size: xx-large;" value="Times" type="submit">
-    </form>
-</div>
-</div>
-<div class="row mt-4">
-<div class="col belka_block ">
-    <legend>Post Text</legend>
-    <form class="float-left mt-2 mr-2" action="" method="POST">
-        <input type="hidden" name="backround_style" value="hotel">
-        <input class="btn btn-info btn-lg" style="font-family: Arial; font-size: xx-large;" value="Arial" type="submit">
-    </form>
-    <form class="float-left mt-2 mr-2" action="" method="POST">
-        <input type="hidden" name="backround_style" value="hotel">
-        <input class="btn btn-info btn-lg" style="font-family: Impact; font-size: xx-large;" value="Impact" type="submit">
-    </form>
-    <form class="float-left mt-2 mr-2" action="" method="POST">
-        <input type="hidden" name="backround_style" value="hotel">
-        <input class="btn btn-info btn-lg" style="font-family: Candara; font-size: xx-large;" value="Candara" type="submit">
-    </form>
-    <form class="float-left mt-2 mr-2" action="" method="POST">
-        <input type="hidden" name="backround_style" value="hotel">
-        <input class="btn btn-info btn-lg" style="font-family: Comic; font-size: xx-large;" value="Comic" type="submit">
-    </form>
-    <form class="float-left mt-2 mr-2" action="" method="POST">
-        <input type="hidden" name="backround_style" value="hotel">
-        <input class="btn btn-info btn-lg" style="font-family: Verdana; font-size: xx-large;" value="Verdana" type="submit">
-    </form>
-    <form class="float-left mt-2 mr-2" action="" method="POST">
-        <input type="hidden" name="backround_style" value="hotel">
-        <input class="btn btn-info btn-lg" style="font-family: 'Times New Roman', Times, serif; font-size: xx-large;" value="Times" type="submit">
-    </form>
-</div>
-</div>
+    <div class="row mt-4">
+        <div class="col belka_block ">
+            <legend>Post font:</legend>
+                <form class="float-left mt-2 mr-2" action="{{ url_for('main_panel.change_post_font_style') }}" method="POST">
+                    <input class="btn btn-info btn-lg mt-1" name="PostFontFamily" style="font-family: Arial; font-size: xx-large;" value="Arial" type="submit">  
+                    <input class="btn btn-info btn-lg mt-1" name="PostFontFamily" style="font-family: 'Times New Roman', Times, serif; font-size: xx-large;" value="Times" type="submit"> 
+                    <input class="btn btn-info btn-lg mt-1" name="PostFontFamily" style="font-family: Impact; font-size: xx-large;" value="Impact" type="submit">
+                    <input class="btn btn-info btn-lg mt-1" name="PostFontFamily" style="font-family: Candara; font-size: xx-large;" value="Candara" type="submit">
+                    <input class="btn btn-info btn-lg mt-1" name="PostFontFamily" style="font-family: Comic; font-size: xx-large;" value="Comic" type="submit">
+                    <input class="btn btn-info btn-lg mt-1" name="PostFontFamily" style="font-family: Verdana; font-size: xx-large;" value="Verdana" type="submit">
+
+                </form>
+        </div>
+        </div>
+    </div>
 {% endblock content %}

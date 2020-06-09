@@ -1,0 +1,64 @@
+{% extends 'admin_panel/layout.html' %}
+{% block content %}
+
+<div class="row">
+    <div class="content-section">
+        <form method="POST" action="">
+            {{ form.hidden_tag() }}
+            <fieldset class="form-group">
+                <h2>Create new Post</h2>
+                <h6>Choose page for new post</h6>
+                <select name="page_select" class="form-control">
+                    <option name="page_select" value="index">index</option>
+                    {% for page in pages %}
+                    <option name="page_select" value="{{ page.title_page }}">{{ page.title_page }}</option>      
+                    {% endfor %} 
+                </select>   
+                <div class="form-group">
+                    {{ form.title.label(class="form-control-label") }}
+                    {% if form.title.errors %}
+                        {{ form.title(class="form-control form-control-lg is-invalid") }}
+                        <div class="invalid-feedback">
+                            {% for error in form.title.errors %}
+                                <span>{{ error }}</span>
+                            {% endfor %}
+                        </div>
+                    {% else %}
+                        {{ form.title(class="form-control form-control-lg") }}
+                    {% endif %}
+                </div>
+                <div class="form-group">
+                    {{ form.content.label(class="form-control-label") }}
+                    {% if form.content.errors %}
+                        {{ form.content(class="form-control form-control-lg is-invalid") }}
+                        <div class="invalid-feedback">
+                            {% for error in form.content.errors %}
+                                <span>{{ error }}</span>
+                            {% endfor %}
+                        </div>
+                    {% else %}
+                        {{ form.content(class="form-control form-control-lg") }}
+                    {% endif %}
+                </div>
+            </fieldset>
+            <div class="form-group">
+                {{ form.submit(class="btn btn-outline-info") }}
+            </div>
+        </form>
+    </div>
+    <div class="content-section">
+        <h2>Edit post</h2>
+    <form action="{{ url_for('main_panel.post_operations') }}" method="POST">
+        <select name="post_select" class="form-control">
+            {% for post in posts %}
+            <option name="post_select" value="{{ post.title }}">{{ post.title }}</option>      
+            {% endfor %} 
+        </select>   
+        <input class="mt-4 btn btn-info btn-block" name="action" type="submit" value="Update post">
+        <input class="btn mt-2 btn-danger btn-block" name="action" type="submit" value="Delete post">    
+    </form>
+        
+
+    </div>
+</div>
+{% endblock content %}
