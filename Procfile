@@ -1,1 +1,1 @@
-web: gunicorn belka:app
+web: gunicorn run:app
