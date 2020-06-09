@@ -1,8 +1,8 @@
 from flask import (redirect, render_template, url_for,
-                   Blueprint, flash, request)
+                   Blueprint, flash)
 from flask_login import login_user, logout_user, current_user, login_required
 from belka.authentication_panel.forms import RegistrationForm, LoginForm
-from belka.models import User, Website
+from belka.models import User
 from belka import bcrypt, db
 from belka.authentication_panel.utils import (is_user_website_created,
                                               UserRoles)
